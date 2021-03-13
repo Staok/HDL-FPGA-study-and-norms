@@ -16,6 +16,19 @@
 
 ------
 
+## 0.5 给大家推荐的教程
+
+-   各种开发板开源资料（网上可以找到全套资料）：如 正点原子、野火、黑金、Allegro等开发板（考验资料搜集能力的时候到了）。
+-   [小梅哥 bilibili 主页](https://space.bilibili.com/476579378) 缺点：视频太~长了。
+
+以下是文档形式的教程
+
+-   [Quartus II的奇幻漂流V1.0——手把手教你使用Quartus II](http://blog.sina.com.cn/s/blog_bff0927b0102v0u3.html)
+-   [Nios II的奇幻漂流V2.0——基于Qsys的Nios II设计教程](http://blog.sina.com.cn/s/blog_bff0927b0102uzmh.html)
+-   [Nios II入门实验](https://www.cnblogs.com/yuphone/category/276816.html)
+-   [小梅哥 FPGA资料专区](http://www.corecourse.cn/forum.php?mod=forumdisplay&fid=41)
+-   [HDL & FPGA 学习和规范（HDL-&-FPGA- study）](https://github.com/Staok/HDL-FPGA-study-and-norms)
+
 ## 1 HDL & FPGA 值得注意的
 
 ### FPGA基本概念
