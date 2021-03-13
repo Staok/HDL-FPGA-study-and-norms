@@ -16,19 +16,6 @@
 
 ------
 
-## 0.5 给大家推荐的教程
-
--   各种开发板开源资料（网上可以找到全套资料）：如 正点原子、野火、黑金、Allegro等开发板（考验资料搜集能力的时候到了）。
--   [小梅哥 bilibili 主页](https://space.bilibili.com/476579378) 缺点：视频太~长了。
-
-以下是文档形式的教程
-
--   [Quartus II的奇幻漂流V1.0——手把手教你使用Quartus II](http://blog.sina.com.cn/s/blog_bff0927b0102v0u3.html)
--   [Nios II的奇幻漂流V2.0——基于Qsys的Nios II设计教程](http://blog.sina.com.cn/s/blog_bff0927b0102uzmh.html)
--   [Nios II入门实验](https://www.cnblogs.com/yuphone/category/276816.html)
--   [小梅哥 FPGA资料专区](http://www.corecourse.cn/forum.php?mod=forumdisplay&fid=41)
--   [HDL & FPGA 学习和规范（HDL-&-FPGA- study）](https://github.com/Staok/HDL-FPGA-study-and-norms)
-
 ## 1 HDL & FPGA 值得注意的
 
 ### FPGA基本概念
@@ -319,12 +306,18 @@ FPGA白书从P105开始。
 
 ## 4 值得跟着的学习网站
 
-（TODO：这个视频https://www.bilibili.com/video/BV1jE411v7H3里面的内容总结到《Intel FPGA Cyclone 系列笔记和规范》里面
-先把fpga白书的画的内容都梳理出来，然后再看这个视频补充）
+-   各种开发板开源资料（网上可以找到全套资料）：如 正点原子、野火、黑金、Allegro等开发板（考验资料搜集能力的时候到了）。
+-   [小梅哥 B站视频（Verilog & FPGA基础，SOPC，SOC以及其他常用协议](https://space.bilibili.com/476579378) 缺点：视频太~长了。
+-   [小梅哥 时序约束专讲](https://www.bilibili.com/video/BV1jE411v7H3)
 
--   [小梅哥B站视频（Verilog & FPGA基础，SOPC，SOC以及其他常用协议）](https://space.bilibili.com/476579378) （TODO：这些都固定了，都下载下来）
--   [小梅哥 - 博客园](https://www.baidu.com/link?url=CYD8ZBPmHJP4lnc7VKOm_uIU55a5sTGQWKyKYCixBTbitt-DLiyDpbSK0VhrnSSJ&wd=&eqid=9dea342a00000a8400000006603cb8f7) 新人从“FPGA基础教程连载”看起即可
--   ...
+以下是文档形式的教程
+
+-   [Quartus II的奇幻漂流V1.0——手把手教你使用Quartus II](http://blog.sina.com.cn/s/blog_bff0927b0102v0u3.html)
+-   [Nios II的奇幻漂流V2.0——基于Qsys的Nios II设计教程](http://blog.sina.com.cn/s/blog_bff0927b0102uzmh.html)
+-   [Nios II入门实验](https://www.cnblogs.com/yuphone/category/276816.html)
+-   [小梅哥 FPGA资料专区](http://www.corecourse.cn/forum.php?mod=forumdisplay&fid=41)
+-   [小梅哥 - 博客园](https://www.baidu.com/link?url=CYD8ZBPmHJP4lnc7VKOm_uIU55a5sTGQWKyKYCixBTbitt-DLiyDpbSK0VhrnSSJ&wd=&eqid=9dea342a00000a8400000006603cb8f7)
+-   [HDL & FPGA 学习和规范（HDL-&-FPGA- study）](https://github.com/Staok/HDL-FPGA-study-and-norms)
 
 ------
 
