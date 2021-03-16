@@ -28,7 +28,7 @@
 
 -   板级电路组成：电源，时钟，复位，JTAG，固化配置信息FLASH，外设。具体连接形式参考一些开发板和开源板子的原理图和PCB。
 
-    -   电源：核心电源（标识 VCCINT，低压版本 1.0V，非低压 1.2V），IO BANK（标识 VCCIOx（x = 1~8），电压 1.2V~3.3V），PLL（模拟PLL标识 VCCAx（x = 1~2或4），其地标识 GNDAx（x同前），电压 2.5V；数字PLL标识 VCCD_PLLx（x = 1~2或4），电压1.2V），外设供电。
+    -   电源：核心电源（标识 VCCINT，低压版本 1.0V，非低压 1.2V），IO BANK（标识 VCCIOx（x = 1到8），电压 1.2V到3.3V），PLL（模拟PLL标识 VCCAx（x = 1、2或4），其地标识 GNDAx（x同前），电压 2.5V；数字PLL标识 VCCD_PLLx（x = 1、2或4），电压1.2V），外设供电。
 
 -   全局时钟网络：专用时钟网络走线，同一时钟到达不同寄存器的时间差可以被控制到很小的范围内。外部输入时钟信号要连接到“全局时钟专用引脚”上。FPGA的综合工具会自动识别和分配。
 
@@ -38,11 +38,17 @@
 
 -   调试和固化：
 
-    具体看官网手册“Cyclone IV Device Handbook Volume 1”的“Configuration Process”章节和“Conguring Altera FPGAs.pdf”手册。
+    更多详细参考：
+
+    -   [FPGA配置方式](https://www.cnblogs.com/aikimi7/p/3499633.html)
+    -   [FPGA的各种功能管脚](https://tech.hqew.com/fangan_1990801)
+    -   [Altera特殊管脚的使用](https://blog.csdn.net/xhnmn/article/details/85017131)
+
+    具体看官网手册“Cyclone IV Device Handbook Volume 1”的“Configuration Process”章节和“Configuring Altera FPGAs.pdf”手册。
 
     -   调试为通过 JTAG 接口用 Blaster 下载器把编译生成的.sof文件下载到FPGA内掉电易失的SRAM中。
 
-    -   固化是通过 JTAG 接口用 Blaster 下载器把编译并转化生成的.jic文件下载到FPGA对于的外部FLASH器件中。FPGA上电从FLASH中获取配置信息，分为几种不同的配置模式，根据 [3:0]MSEL 四个引脚上电时的电平状态确定。配置模式分为以下几种：
+    -   固化是通过 JTAG 接口用 Blaster 下载器把编译并转化生成的.jic文件下载到FPGA对于的外部FLASH器件中。FPGA上电从FLASH中获取配置信息，分为几种不同的配置模式，根据 [3:0]MSEL 四个引脚上电时的电平状态确定，而具体的 [3:0]MSEL 与 启动方式的关系 看对应FPGA芯片系列型号的手册。配置模式分为以下几种：
 
         AS（主动串行），适用于小容量。由FPGA器件引导配置过程，EPCS系列FLASH专供AS模式。一般用此模式。
 
@@ -54,7 +60,7 @@
 
         等其他。
 
--   板级PCB走线遵循“PCB走线规范”。（TODO，这里引用我总结的PCB规范全网收集梳理并简约化）
+-   板级PCB走线遵循“[PCB走线规范](https://github.com/Staok/thoughs-about-hardware-design)”。
 
 -   开发流程：
 
@@ -62,7 +68,7 @@
 
 -   推荐多去读读FPGA原厂（Altera 或 Xilinx）的官方文档，在它们的一些文档手册中有各种常见的电路的参考实现实例和代码风格。
 
--   三种优化模式：针对速度的优化；针对面积的优化；针对功耗的优化。
+-   三种优化模式（IDE 软件里可选）：针对速度的优化；针对面积的优化；针对功耗的优化。
 
 -   ...
 
@@ -72,7 +78,7 @@
 
 -   No.1，层次化设计，IP化设计。自写小IP尽量参数化、可重用，方便日后搭建数字积木。
 
--   顶层文件名为“Top.v”，顶层模块名也为"top"。
+-   顶层文件名与顶层模块名一致。
 
 -   模块的定义名加尾缀"_ module"，输入输出的信号名各加后缀"_ in"和"_ out"，低电平有效的信号加尾缀"_n"。
 
@@ -194,6 +200,8 @@
 
     在quartus工程中添加自己生成的sdc文件：点击 Assignments \ Settings\TimeQuest Timing Analyzer，在这个对话框中，将生成的sdc文件添加到自己的工程里。
 
+-   针对硬件引脚固定的项目，先在 Pin Planner 写好所有引脚定义，然后导出，在 Pin Planner 界面里面点 左上角的 File 然后 Export即可。以后在相同硬件平台创建新工程时可以直接导入这个引脚配置，在 Assignments 里面的 Import Assignments... 导入即可 。
+
 -   关于 SOPC，Nios II Eclipse 里面的 BSP 包里的 drives 文件夹里面的 _reg 后缀 的.h 文件里面为自加的 Nios II 外设的可调用的 API。
 
 -   关于 Nios II software build tool for eclipse 这个 IDE 的设置 和 程序固化：
@@ -206,6 +214,7 @@
     -   开始编译，在 IDE 中，右击工程名 Temp，选 Build Project，成功后再 Make Targets->Build，里面选 mem_init_generate  ，再点 Build
     -   然后再把 mem_init 文件夹里面的 meminit.qip 文件到 Quartus 工程中，再全编译产生一个 .sof 文件，进而转 .jic 文件进行固化。
     -   其他：若在 IDE 里面 Run 或者 Debug 时候显示 “make: *** [../..._bsp-recurs-make-lib] Error 2” 错误，则在 IDE 中，右击工程名 Temp，Nios II->BSP Editor，再点一下右下角的 Generate，并关闭重新编译，Run，即可。
+    -   其他：SOPC 的 Nios 2 处理器构建时（Qsys）可以只加 RAM（不用 ROM）（RAM 大小：经验值至少大于10KB）来运行程序。当外设较多时，Nios 2 的底层驱动 HAL 库非常大，对于储存空间紧张的 FPGA 用 RAM + ROM 会资源不够，所以只用 RAM 且设置足够大。Nios 2 processer 设置复位和中断向量均在 RAM 里面。在 Quartus II 里面把逻辑和 Nios II software build tool for eclipse 生成的 Nios 2 程序文件 .qip 一同全编译产生 .sof 后，再转换成 .jic 文件进行固化。
 
 -   ...
 
@@ -325,7 +334,7 @@ FPGA白书从P105开始。
 
 *p.s 本文一部分来自自己总结的经验，一部分来自参考。参考不是照搬，是选择我认为的精髓，每个人不同，所以推荐看一下这些参考，TA们都提供了很好的技巧。当然也许还有很多更好的资料，可以留言推荐。*
 
--   《FPGA设计-实战演练（逻辑篇）》 吴厚航
+-   [《FPGA设计-实战演练（逻辑篇）》 吴厚航](http://www.tup.com.cn/bookscenter/book_06045601.html#) 在“资源下载”栏可下载随书课件和源码
 -   [知乎 硅农](https://www.zhihu.com/people/ninghechuan)
 -   [Verilog设计的原则和技巧和IP核的使用](https://blog.csdn.net/dengshuai_super/article/details/52528407)
 -   ...
