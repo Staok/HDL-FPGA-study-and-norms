@@ -70,6 +70,8 @@
 
 -   三种优化模式（IDE 软件里可选）：针对速度的优化；针对面积的优化；针对功耗的优化。
 
+-   处理器和FPGA分工：MCU、MPU适合做管理、协调，FPGA的数字逻辑适合做专用的、复杂的、结构和功能固定下来的算法实现。
+
 -   ...
 
 ### 操作和编写规范
@@ -80,7 +82,7 @@
 
 -   顶层文件名与顶层模块名一致。
 
--   模块的定义名加尾缀"_ module"，输入输出的信号名各加后缀"_ in"和"_ out"，低电平有效的信号加尾缀"_n"。
+-   模块的定义名加尾缀"_ module"，输入输出的信号名各加后缀"_ in"和"_ out"，低电平有效的信号加尾缀"_ n"。
 
 -   定义模块的时候，定义输入输出信号时就带好"input" 、 "output" 和 "reg"的类型修饰。
 
@@ -117,15 +119,15 @@
      * 模块简述：...
      ____________________________________________*/
     module example_module
-        (
-                    /*输入信号*/
-                    input clk_in,             /*时钟输入*/
-                    input rst_n_in,           /*复位（低有效）信号输入*/
-        
-                    /*输出信号*/
-                    output reg [7:0]q_out,    /*q 左移位输出*/
-                    output reg [7:0]p_out     /*p 右移位输出*/
-        );
+    (
+        /*输入信号*/
+        input clk_in,             /*时钟输入*/
+        input rst_n_in,           /*复位（低有效）信号输入*/
+    
+        /*输出信号*/
+        output reg [7:0]q_out,    /*q 左移位输出*/
+        output reg [7:0]p_out     /*p 右移位输出*/
+    );
         
         /*对 q 左移位输出*/
         always @(posedge clk_in or negedge rst_n_in)
@@ -181,9 +183,9 @@
     ```verilog
     $display("%d",value);   //与 printf 类似，但这个会自动换行
     $wirte("%d\r\n",value);  //与 printf 一样
-    %od,%oh ：以最少位输出，自适应
-    $time 为执行到当前位置的以 `timescale 为单位的时间计数整数；
-    $realtime 为以小数显示的执行到当前位置的以 timescale 为单位的时间。
+    // %od,%oh ：以最少位输出，自适应
+    // $time 为执行到当前位置的以 `timescale 为单位的时间计数整数；
+    // $realtime 为以小数显示的执行到当前位置的以 timescale 为单位的时间。
     ```
 
     注意：设计仿真文件 testbench 的激励源的时候，对于边沿触发的信号其激励源要设计带有沿变化，否则不会生效。
@@ -203,6 +205,8 @@
 -   针对硬件引脚固定的项目，先在 Pin Planner 写好所有引脚定义，然后导出，在 Pin Planner 界面里面点 左上角的 File 然后 Export即可。以后在相同硬件平台创建新工程时可以直接导入这个引脚配置，在 Assignments 里面的 Import Assignments... 导入即可 。
 
 -   关于 SOPC，Nios II Eclipse 里面的 BSP 包里的 drives 文件夹里面的 _reg 后缀 的.h 文件里面为自加的 Nios II 外设的可调用的 API。
+
+-   Nios II 默认禁止中断嵌套。
 
 -   关于 Nios II software build tool for eclipse 这个 IDE 的设置 和 程序固化：
 
@@ -252,6 +256,15 @@
 -   [NingHeChuan 的 ip_lib ——构建自己的IP库，搭建起你的数字积木](https://github.com/NingHeChuan/Digital_Front_End_Verilog/tree/master/ip_lib)
 
     文件位置：./FPGA学习和规范 的参考源码/NingHeChuan 的 ip_lib/
+
+-   Qsys 中的 SDRAM 使用：[IP介绍和使用](https://blog.csdn.net/qq_43445577/article/details/107375619)
+
+    软核中的使用例程：（默认16位数据位）
+
+    ```c
+     /* 写 *(ram_base) = i;  读 *(ram_base)*/
+    unsigned short * ram_base = (unsigned short *)(SDRAM_0_BASE+0x10000);
+    ```
 
 -   类MCU的时间片轮询实现，晶振时钟通过PLL IP得到准确时钟，每个PLL有五个输出，分别分频得到运行周期为 10MHz、5MHz、1MHz、1KHz、100Hz的程序的入口，把不同功能的程序直接放在想要按照某个周期运行的程序入口即可。这个直接写到模板的Top文件即可，不用作为一个模块。
 
