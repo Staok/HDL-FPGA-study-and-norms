@@ -18,9 +18,9 @@ module state_module
 	(
 		input clk_in,
 		input rst_n_in,
-		input din_in,
+		input din,
 		
-		output reg dout_in;
+		output reg dout;
     );
 	
 	/* 状态名和状态编码定义，用户定义 */
@@ -37,9 +37,9 @@ module state_module
 	reg [2:0] present_state, next_state;
 	
 	/* 当前状态转移到下个状态的同步时序逻辑（用非阻塞赋值“<=”），固定写法 */
-	always @(posedge mclk or negedge rst_n)
+	always @(posedge clk_in or negedge rst_n_in)
 		begin
-			if(!rst_n)
+			if(!rst_n_in)
 				present_state <= STATE_0;
 			else
 				present_state <= next_state;
@@ -103,9 +103,9 @@ module state_module
 	如果输出更多，可以写更多的 always@ 时需同步输出逻辑
 	
 	用户定义 */
-	always @(posedge clk or negedge rst_n)
+	always @(posedge clk_in or negedge rst_n_in)
 		begin
-			if(!rst_n)
+			if(!rst_n_in)
 				dout <= 1'b0;
 			else if(present_state == STATE_4)
 				dout <= 1'b1;

@@ -255,11 +255,17 @@ Intel FPGA Avalon 总线，其灵活特点有：
 
 ![典型Avalon架构](assets/典型Avalon架构.png)
 
+### 定制 外设 IP 核的框架
+
+![定制 外设 IP 核的框架](assets/定制 外设 IP 核的框架.png)
+
 ### 从端口信号类型
 
 *p.s 其中前九个最常用；不带 "_ n" 后缀的都是高电平有效；还有流水线信号、突发信号、三态信号和流控信号等，没有列出。*
 
 *p.s 不带任何读写的最基本信号：clk、reset、chipselect、address 四个。*
+
+*p.s address 地址的信号宽度最好都设置为 32 位宽，地址对齐的时候一一对应，最简便。*
 
 | 信号类型        | 信号宽度                | 方向 | 功能和使用描述                                               |
 | --------------- | ----------------------- | ---- | ------------------------------------------------------------ |
@@ -422,11 +428,13 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 
 -   根据寄存器或者外部引脚的电平组合等信息，可以在运行时任设或者有限改动FPGA内部逻辑的输出引脚，就像STM32的外设引脚切换或者K10的FPIOA一样允许用户将255个内部功能映射到芯片外围的48个自由IO上。
 
--   按键消抖
+- 按键消抖
 
-    思想：~~当“按键可以检测标志位”有效时，按下的边沿触发启动一计数器，同时标记“按键可以检测标志位”失效，当计数器计数到一定值后，再检测按键是否处于按下状态，如果是则标记“按键有效”标志位做输出，如果不是则停止计数，同时标记“按键可以检测标志位”有效，同时清空计数值。~~ 
+  思想：~~当“按键可以检测标志位”有效时，按下的边沿触发启动一计数器，同时标记“按键可以检测标志位”失效，当计数器计数到一定值后，再检测按键是否处于按下状态，如果是则标记“按键有效”标志位做输出，如果不是则停止计数，同时标记“按键可以检测标志位”有效，同时清空计数值。~~ 
 
-    文件位置：./FPGA学习和规范 的参考源码/按键消抖/
+  sopc 读取外部按键设计思路，硬件上先实现一个去抖，然后把无毛刺的稳定的信号传给 nios ii 输入脚，然后 nios ii 里面实现一个外部引脚沿中断。
+
+  文件位置：./FPGA学习和规范 的参考源码/按键消抖/
 
 -   特定序列检测与发送
 
@@ -447,7 +455,7 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
     
 
 -   UART模块
-看《FPGA设计-实战演练（逻辑篇）》 吴厚航 的随书源码。（@TODO 不过这个程序的最外层还不够明朗，需要再整理简化使用）
+    看《FPGA设计-实战演练（逻辑篇）》 吴厚航 的随书源码。（@TODO 不过这个程序的最外层还不够明朗，需要再整理简化使用）
     
 -   状态机
 
@@ -494,9 +502,9 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 
 -   各种开发板开源资料（网上可以找到全套资料）：如 正点原子、野火、黑金、Allegro等开发板（考验资料搜集能力的时候到了）。
 -   [小梅哥 B站视频（Verilog & FPGA基础，SOPC，SOC以及其他常用协议](https://space.bilibili.com/476579378) 缺点：视频太~长了。
--   [小梅哥 时序约束专讲](https://www.bilibili.com/video/BV1jE411v7H3)
+-   [LeiWang1999/FPGA: 帮助大家进行FPGA的入门，分享FPGA相关的优秀文章，优秀项目 (github.com)](https://github.com/LeiWang1999/FPGA) 记录比较全面
 
-以下是文档形式的教程
+文档形式的教程：
 
 -   [Quartus II的奇幻漂流V1.0——手把手教你使用Quartus II](http://blog.sina.com.cn/s/blog_bff0927b0102v0u3.html)
 -   [Nios II的奇幻漂流V2.0——基于Qsys的Nios II设计教程](http://blog.sina.com.cn/s/blog_bff0927b0102uzmh.html)
@@ -504,6 +512,14 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 -   [小梅哥 FPGA资料专区](http://www.corecourse.cn/forum.php?mod=forumdisplay&fid=41)
 -   [小梅哥 - 博客园](https://www.baidu.com/link?url=CYD8ZBPmHJP4lnc7VKOm_uIU55a5sTGQWKyKYCixBTbitt-DLiyDpbSK0VhrnSSJ&wd=&eqid=9dea342a00000a8400000006603cb8f7)
 -   [HDL & FPGA 学习和规范（HDL-&-FPGA- study）](https://github.com/Staok/HDL-FPGA-study-and-norms)
+
+FPGA的时序分析和时序约束的资料参考：
+
+- [FPGA 高级设计：时序分析和收敛](https://zhuanlan.zhihu.com/p/345848164)
+- [小梅哥概述时序约束和分析相关知识](https://www.bilibili.com/video/BV1ZE411f78z)
+- [小梅哥FPGA时序分析和约束实例演练课程](https://www.bilibili.com/video/BV1NE411h7qP)
+- 《深入浅出玩转FPGA第三版》 时序分析章节
+- 《通向FPGA之路---七天玩转Altera之时序篇V1.0》
 
 ------
 
@@ -514,4 +530,7 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 -   [《FPGA设计-实战演练（逻辑篇）》 吴厚航](http://www.tup.com.cn/bookscenter/book_06045601.html#) 在“资源下载”栏可下载随书课件和源码
 -   [知乎 硅农](https://www.zhihu.com/people/ninghechuan)
 -   [Verilog设计的原则和技巧和IP核的使用](https://blog.csdn.net/dengshuai_super/article/details/52528407)
+-   还可以参考但还没看的：
+    - 《FPGA设计-实战演练（高级技巧篇）》王敏志
+    - ...
 -   ...
