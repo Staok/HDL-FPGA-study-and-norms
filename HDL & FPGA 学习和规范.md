@@ -178,7 +178,7 @@
   	verilog 中 整形、浮点型等变量相当于 define 或者 parameter 的作用，这里只用 后二者即可了
   	
   	字符串
-  	reg [1: 8*14]Message = "INTERNAL ERROR"; I 为第 1 位，N 为 第 2 位，依此类推
+  	reg [8*14 : 1]Message = "INTERNAL ERROR"; I 为第 1 位，N 为 第 2 位，依此类推
   
   	运算;
   	算术运算符(+，-，x，/,%)
@@ -251,7 +251,7 @@
               /* 顺序执行 */
               if(!rst_n_in)
                   begin
-                      q_out <= 8`bzzZz_0001; /* 总线赋值 */
+                      q_out <= 8'bzzZz_0001; /* 总线赋值 */
                   end
               else
                   begin
@@ -262,9 +262,9 @@
       /*对 p 右移位输出*/
       always @(posedge clk_in or negedge rst_n_in)
           begin
-              if(rst_n_in == 1`b0)
+              if(rst_n_in == 1'b0)
                   begin
-                      p_out <= 8`b1000_0000;
+                      p_out <= 8'b1000_0000;
                   end
               else
                   begin
