@@ -1,0 +1,7 @@
+供您选择的变体如下：
+仅采用逻辑的 Cyclone® V E FPGA、
+采用 3.125 Gbps 收发器的 Cyclone® V GX FPGA、
+采用 6.144 Gbps 收发器的 Cyclone® V GT FPGA、
+采用硬核处理器系统 (HPS)（基于 ARM*）和逻辑的 Cyclone® V SE SoC、
+采用 HPS（基于 ARM*）和 3.125 Gbps 收发器的 Cyclone® V SX SoC，
+以及采用 HPS（基于 ARM*）和 6.144 Gbps 收发器的 Cyclone® V ST SoC。
