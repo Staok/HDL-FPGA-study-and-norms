@@ -30,11 +30,10 @@
 
 -   板级电路组成：电源，时钟，复位，JTAG，固化配置信息FLASH，外设。具体连接形式参考一些开发板和开源板子的原理图和PCB。
 
-    -   电源：核心电源（标识 VCCINT，低压版本 1.0V，非低压 1.2V），IO BANK（标识 VCCIOx（x = 1到8），电压 1.2V到3.3V），PLL（模拟PLL标识 VCCAx（x = 1、2或4），其地标识 GNDAx（x同前），电压 2.5V；数字PLL标识 VCCD_PLLx（x = 1、2或4），电压1.2V），外设供电。
+    -   电源：核心电源（标识 VCCINT，低压版本 1.0V，非低压 1.2V），IO BANK（标识 VCCIOx（x = 1到8），电压 1.2V到3.3V），PLL（模拟PLL标识 VCCAx（x = 1、2或4），其地标识 GNDAx（x同前），电压 2.5V；数字PLL标识 VCCD_PLLx（x = 1、2或4），电压1.2V），外设供电。不同系列 FPGA 的供电措施不同，具体要看电器参数等手册，尽量使用推荐值。
+    -   复位：上电后，FPGA器件开始加载外部FLASH芯片的固化信息，加载完毕之后（最多0.3s）再进行复位（低电平有效），阻容RC复位电路可选：R=47kΩ，C=10uF，3.3V的IO标准下，充电到1.7V时间为340ms。
 
 -   全局时钟网络：专用时钟网络走线，同一时钟到达不同寄存器的时间差可以被控制到很小的范围内。外部输入时钟信号要连接到“全局时钟专用引脚”上。FPGA的综合工具会自动识别和分配。
-
--   复位：上电后，FPGA器件开始加载外部FLASH芯片的固化信息，加载完毕之后（最多0.3s）再进行复位（低电平有效），阻容RC复位电路可选：R=47kΩ，C=10uF，3.3V的IO标准下，充电到1.7V时间为340ms。
 
 -   I/O：输入和输出时钟信号尽量分配到专用引脚上。差分信号对儿必须分配到支持差分的专用引脚上。高速信号分配到支持高速传输的专用引脚上（如DDR的专用IO接口）。一些硬核使用的引脚可能是固定的要注意。总线信号尽量分配到同一个BANK。一些产生噪声干扰的信号（如时钟信号）尽量远离器件的配置喜欢和其它敏感的信号。
 
@@ -173,13 +172,19 @@
   	4'b1x_01	4 位二进制数，为 1 x 0 1，下划线方便阅读
   	4'hz  		4 位z(扩展的z) , 即 zzzz，z 表高阻状态
   	parameter SEC_TIME = 48_000_000; 十进制数
-  	位长不能够为表达式
+  	位长不能够为变量表达式，可以为预编译、parameter 的表达式
   	
   	verilog 中 整形、浮点型等变量相当于 define 或者 parameter 的作用，这里只用 后二者即可了
   	
   	字符串
   	reg [8*14 : 1]Message = "INTERNAL ERROR"; I 为第 1 位，N 为 第 2 位，依此类推
-  
+  	
+  	数组
+  	reg [wordsize : 0]my_memory[arraysize : 0];
+  	引用数组某个数的某个位
+  	my_memory_1 = my_memory[1];
+  	my_memory_1_bit0 = my_memory_1[0];
+  	
   	运算;
   	算术运算符(+，-，x，/,%)
   	赋值运算符(=,<=)
@@ -203,6 +208,27 @@
         	程序段2
       `endif
   */
+  
+  
+  /**
+    *******************************************************************************************************
+    * File Name: xxx.v
+    * Author: xxx
+    * Version: V1.0.0
+    * Date: 20xx-xx-xx
+    * Brief: xxxxx
+    *******************************************************************************************************
+    * History
+    *		1.Author: xxx
+    *		  Date: 20xx-xx-xx
+    *		  Mod: xxxxx
+    *
+    *		2.Author: xxx
+    *		  Date: 20xx-xx-xx
+    *		  Mod: xxxxx
+    *
+    *******************************************************************************************************
+    */
   
   // *********************************************************************************
   // Project Name :       
@@ -243,7 +269,10 @@
       /* 常量参数 */
       parameter  bit_7 = 7,bit_8 = 8;
       
-      /* 三目运算例子 wire [2:0] Student = Marks > 18 ? Grade_A : Grade_C; */
+      /* 三目运算例子 
+      	wire [2:0] Student = Marks > 18 ? Grade_A : Grade_C;
+      	assign LR = (LR_select[1] == 1'b1) ? 1'bx : LR_select[0];
+      */
      
       /* 时序逻辑定义，对 q 左移位输出*/
       always @(posedge clk_in or negedge rst_n_in)
@@ -318,7 +347,7 @@
   	一个参数化模块设计例子
   	定义：
   module Sdram_Write
-  #(  parameter   DATA_WIDTH  =   16,
+  #(  parameter   DATA_WIDTH  =   16,		注，#() 这个部分用于模块参数化配置，但不可综合
       parameter   ADDR_WIDTH  =   12,
       parameter   ROW_DEPTH   =   2,
       parameter   COL_DEPTH   =   256,
@@ -387,6 +416,7 @@
 -   尽量不要用减法和除法（一个考虑多，一个面积大）；乘以常数直接用“*”，编译器会优化；两变量乘法用硬件乘法器IP。
 -   使用 function 函数语句对复杂数值运算打包（它不能包含任何时间控制语句）；函数（function）可以调用其他函数（function）但不能调用任务（task），（function）函数由 任务（task）或其它 module 中调用。使用 task 语句写可重用的、固定下来的组合逻辑（不能有时序逻辑 always，不能有 wire 类型数据，这就是和 module 的区别；任务（task）可以调用其他任务（task）和函数（function），任务（task）只能在 module 中的语句块中被调用）。
 -   可以用 generate for 写 同结构不同参数 的 always@(*) 等代码，用 generate if/case 写一些随着需求可变的代码或 IP 核。 generate 语句属于预编译语句。
+-   常用的，时钟上升沿锁存数据，时钟下降沿改变数据。
 
 ##### 设计技巧
 
@@ -460,7 +490,7 @@
 
 “**乒乓操作**”
 
-“乒乓操作”是一个常常应用于数据流控制的处理技巧。数据缓冲模块可以为 单\双口 RAM、FIFO 等。向缓冲区1存数据的时候，缓冲区2向外出数据，向缓冲区2存数据的时候，缓冲区1向外出数据，以此循环。
+“乒乓操作”是一个常常应用于数据流控制的处理技巧。数据缓冲模块可以为 单\双口 RAM、FIFO 等。向缓冲区 1 存数据的时候，缓冲区 2 向外出数据，向缓冲区 2 存数据的时候，缓冲区 1 向外出数据，以此循环。
 
 ![乒乓操作示意图](assets/乒乓操作示意图.png)
 
@@ -484,8 +514,9 @@
 ##### ModelSim 仿真
 
 1. 确保 Quartus II 软件中 modelsim 的路径设置正确。步骤：Tools -> Options -> EDA Tool Options 里面，ModelSim-Altera 里面 设置正确路径 `[盘符]:\intelFPGA\18.0\modelsim_ase\win32aloem`。
-
-2. 仿真文件 testbench 均由 IDE 软件产生（当引脚很多时节省手写时间）。步骤：先对工程做一次全编译，然后 Quartus II 软件里面 Processing->Start->Start Test Bench Template Writer，生成 .vt 格式的 testbench 文件后，修改这个文件名与里面顶层模块名一致。然后按照下面的样式修改仿真文件。
+2. 先对工程做一次全编译。仿真文件 testbench 均由 IDE 软件产生（当引脚很多时节省手写时间）。步骤： Quartus II 软件里面 Processing->Start->Start Test Bench Template Writer，生成 .vt 格式的 testbench 文件后，修改这个文件名与里面顶层模块名一致。
+3. 添加仿真文件到 Setting 里的 Simulation 里面（这一步新人可看教程），并设置 testbench 文件 为工程顶层文件。
+4. 然后按照下面的样式修改仿真文件。
 
   一般仿真文件结构：
 
@@ -495,13 +526,23 @@
   /* 设定时钟周期，这里为 20ns，即 50Mhz */
   `define clock_period 20
   
+  /* 仿真文件的顶层模块 */
+  module xxx_vlg_tst();
+  
+  // general purpose registers
+  reg eachvec; /* 这个必须有。。。 */
+  
+  /* 这里定义模块内各种 wire 和 net */
+  
+  /* 这里例化被仿真模块 */
+  
   /* 产生时钟 */
-  always #(`clock_period/2) CLK_in = ~CLK_in;
+  always #(`clock_period/2) clk_in = ~clk_in;
   
   initial
       begin
           $display("Running testbench");
-          CLK_in = 0; /* 时钟信号初始值 */
+          clk_in = 0; /* 时钟信号初始值 */
           /* 或者用此产生激励源:
           	forever #10 CLK_in = ~CLK_in;    重复运行语句直到仿真结束
           	repeat(100) #5 CLK_in = ~CLK_in; 重复运行语句 100 次
@@ -512,9 +553,14 @@
           #1000;
           
           $display("Stop testbench");
-          // $stop; /* 停止仿真 */
-          $over;
+          $stop; /* 停止仿真 */
       end
+  
+  always
+  	begin
+  		@eachvec; /* 这个必须有。。。 */
+  	end
+  endmodule
   ```
 
   打印调试信息：
@@ -529,7 +575,7 @@
 
   注意：设计仿真文件 testbench 的激励源的时候，对于边沿触发的信号其激励源要设计带有沿变化，否则不会生效。
 
-3. 然后把 仿真文件 设为 工程顶层文件，再 Analysis & Elaboration（分析 测试文件），然后可以开始仿真了，Tools -> Run Simulation Tool，里面有 RTL 级别仿真（前仿真）和 门级仿真（后仿真）。
+3. 然后把 仿真文件 设为 工程顶层文件，再 Analysis & Elaboration（分析 测试文件），编译没问题后可以开始仿真了，Tools -> Run Simulation Tool，里面有 RTL 级别仿真（前仿真）和 门级仿真（后仿真）。
 
 4. ModelSim 软件自动打开和仿真并结束后，右边可以查看信号逻辑时序图，通过 “+” 或 “-” 按钮进行放大和缩小视图，左边可以手动增减信号。
 
@@ -553,9 +599,10 @@
 
 **NCO 正弦波合成**
 
-- 时间核幅值精度可设。
+- 时间和幅值精度可设，运行时不可调。
 - 频率、相位运行时可调。
-- 参考好文 [使用Quartus 18.0 的NCO ip核产生一个正弦信号，并用modelsim仿真（解决asj文件not define 问题）_guorui的博客-CSDN博客](https://blog.csdn.net/qq_44554964/article/details/110880830)。
+- 概念参考 `/额外文档/nco原理.docx`。
+- 使用参考 [使用Quartus 18.0 的NCO ip核产生一个正弦信号，并用modelsim仿真（解决asj文件not define 问题）_guorui的博客-CSDN博客](https://blog.csdn.net/qq_44554964/article/details/110880830)。
 
 **ALTDDIO_IN**
 
@@ -575,16 +622,23 @@
   ```verilog
   pll pll_inst
   (
-      .areset ( !rst_n ),			//高电平输入复位 PLL
+      .areset ( !rst_n_in ),      //高电平输入复位 PLL
       .inclk0 ( CLK_50M_in ),
       .c0 ( pll_out_10k ),
       .c1 ( pll_out_1M ),
       .c2 ( pll_out_100M ),
-      .locked ( pll_out_locked )	//高电平输出表明 PLL 开始正常工作
+      .locked ( pll_out_locked )  //高电平输出表明 PLL 开始正常工作
   );
   ```
 
+**Qsys 中的 SDRAM 使用**
 
+[IP介绍和使用](https://blog.csdn.net/qq_43445577/article/details/107375619)，软核中的使用例程如下（默认16位数据位）。
+
+```c
+ /* 写 *(ram_base) = i;  读 *(ram_base)*/
+unsigned short * ram_base = (unsigned short *)(SDRAM_0_BASE+0x10000);
+```
 
 #### Nios II 相关
 
@@ -796,15 +850,6 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 
     文件位置：./FPGA学习和规范 的参考源码/NingHeChuan 的 ip_lib/
 
--   Qsys 中的 SDRAM 使用：[IP介绍和使用](https://blog.csdn.net/qq_43445577/article/details/107375619)
-
-    软核中的使用例程：（默认16位数据位）
-
-    ```c
-     /* 写 *(ram_base) = i;  读 *(ram_base)*/
-    unsigned short * ram_base = (unsigned short *)(SDRAM_0_BASE+0x10000);
-    ```
-
 -   类MCU的时间片轮询实现，晶振时钟通过PLL IP得到准确时钟，每个PLL有五个输出，分别分频得到运行周期为 10MHz、5MHz、1MHz、1KHz、100Hz的程序的入口，把不同功能的程序直接放在想要按照某个周期运行的程序入口即可。这个直接写到模板的Top文件即可，不用作为一个模块。
 
 -   根据寄存器或者外部引脚的电平组合等信息，可以在运行时任设或者有限改动FPGA内部逻辑的输出引脚，就像STM32的外设引脚切换或者K10的FPIOA一样允许用户将255个内部功能映射到芯片外围的48个自由IO上。
@@ -902,6 +947,11 @@ FPGA的时序分析和时序约束的资料参考：
 - [小梅哥FPGA时序分析和约束实例演练课程](https://www.bilibili.com/video/BV1NE411h7qP)
 - 《深入浅出玩转FPGA第三版》 时序分析章节
 - 《通向FPGA之路---七天玩转Altera之时序篇V1.0》
+
+学习路线总结文章：
+
+- [如何学习FPGA，FPGA学习教程学习经验 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/406835323)
+- 
 
 ------
 
