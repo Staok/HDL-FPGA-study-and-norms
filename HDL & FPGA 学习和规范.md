@@ -12,6 +12,8 @@
 
 本文系广泛撷取、借鉴和整理，适合刚入门的人阅读和遵守，已经有较多经验的人看一看图个乐，如有错误恭谢指出！
 
+本文为简述风格，本意即记录要点和便于快速拾起。
+
 ------
 
 ## O 目录
@@ -41,24 +43,25 @@
 
   更多详细参考：
 
-  -   [FPGA配置方式](https://www.cnblogs.com/aikimi7/p/3499633.html)
-  -   [FPGA的各种功能管脚](https://tech.hqew.com/fangan_1990801)
-  -   [Altera特殊管脚的使用](https://blog.csdn.net/xhnmn/article/details/85017131)
-
+  -   [FPGA配置方式](https://www.cnblogs.com/aikimi7/p/3499633.html)。
+  -   [FPGA的各种功能管脚](https://tech.hqew.com/fangan_1990801)。
+  -   [Altera特殊管脚的使用](https://blog.csdn.net/xhnmn/article/details/85017131)。
+  -   官方手册里是最全的、最准的，多看！
+  
   具体看官网手册“Cyclone IV Device Handbook Volume 1”的“Configuration Process”章节和“Configuring Altera FPGAs.pdf”手册。
-
+  
   -   调试为通过 JTAG 接口用 Blaster 下载器把编译生成的.sof文件下载到FPGA内掉电易失的SRAM中。
-
+  
   -   固化是通过 JTAG 接口用 Blaster 下载器把编译并转化生成的.jic文件下载到FPGA对于的外部FLASH器件中。FPGA上电从FLASH中获取配置信息，分为几种不同的配置模式，根据 [3:0]MSEL 四个引脚上电时的电平状态确定，而具体的 [3:0]MSEL 与 启动方式的关系 看对应FPGA芯片系列型号的手册。配置模式分为以下几种：
-
+  
       AS（主动串行），适用于小容量。由FPGA器件引导配置过程，EPCS系列FLASH专供AS模式。一般用此模式。
-
+  
       AP（主动并行），速度快，占I/O更多，适用于大容量FPGA器件。EPC系列FLASH用于此。
-
+  
       PS（被动串行），需要外部MCU或CPLD（如MAX II系列）控制FLASH的数据打入FPGA，此方式最灵活，对于多个FPGA或者要自动更换固件用此模式。
-
+  
       ![被动串行配置方式（PS）详解](assets/被动串行配置方式（PS）详解.jpg)
-
+  
       等其他。
 
 ### FPGA 开发流程和适用范围
@@ -653,7 +656,7 @@ unsigned short * ram_base = (unsigned short *)(SDRAM_0_BASE+0x10000);
     -   在 IDE 中，右击工程名 Temp，选 New->Source Folder，把同上一步的文件夹添加进来；然后右击工程名 Temp，选 Refresh。
     -   开始编译，在 IDE 中，右击工程名 Temp，选 Build Project，成功后再 Make Targets->Build，里面选 mem_init_generate  ，再点 Build。
     -   然后再把 mem_init 文件夹里面的 meminit.qip 文件到 Quartus 工程中，再全编译产生一个 .sof 文件，进而转 .jic 文件进行固化。
--   其他：若在 IDE 里面 Run 或者 Debug 时候显示 “make: *** [../..._bsp-recurs-make-lib] Error 2” 错误，则在 IDE 中，右击工程名 Temp，Nios II->BSP Editor，再点一下右下角的 Generate，并关闭重新编译，Run，即可。
+-   其他：若在 IDE 里面 Run 或者 Debug 时候显示 “make:[../..._bsp-recurs-make-lib] Error 2” 错误，则在 IDE 中，右击工程名 Temp，Nios II->BSP Editor，再点一下右下角的 Generate，并关闭重新编译，Run，即可。
 -   SOPC 的 Nios 2 处理器构建时（Qsys 或 SOPC Builder里面）可以只加 RAM（不用 ROM）（RAM 大小：经验值至少大于10KB）（这里的 RAM 是 FPGA 里面的 M9K 存储器，不是外接 RAM 芯片的）来运行程序。当外设较多时，Nios 2 的底层驱动 HAL 库非常大，对于储存空间紧张的 FPGA 用 RAM + ROM 会资源不够，所以只用 RAM 且设置足够大。Nios 2 processer 设置复位和中断向量均在 RAM 里面。在 Quartus II 里面把逻辑和 Nios II software build tool for eclipse 生成的 Nios 2 程序文件 .qip 一同全编译产生 .sof 后，再转换成 .jic 文件进行固化。
 -   SOPC系统构建（Qsys 或 SOPC Builder里面）还是得尽量添加 EPCS 存储器件 (如果板子只有一个 EPCS Flash（一般都是一个），那就是与 FPGA 存放逻辑共用的那个存储器件 )控制器和 SRAM （或 SDRAM）控制器（板子上要有至少一个 RAM 芯片），否则只靠 FPGA 的片上存储空间写 Nios II 程序，那么能写的程序太少了（HAL 库就占了非常多容量），非常受限。
 -   每一个外设尽量封装成 Avalon 接口的 IP 核，加入到 Nios II 的外设中；IP 核的设计分为三个层次，Avalon 接口层，寄存器层和逻辑层（输出层），Nios II 软件只需操作/读写 IP 核的寄存器组即可控制该 IP 核所有功能。
@@ -686,36 +689,45 @@ Intel FPGA Avalon 总线，其灵活特点有：
 -   高性能，易实现，占用资源少，开放使用。
 -   多种模式，时延和时序可调整，定制外设 IP 核超级灵活。
 
-若只使用 Quartus II 的 Qsys 自带的定制的 Avalon 总线外设构建SOPC系统，不需了解 Avalon 总线，因为这些自带外设的接口都已经写好了 Avalon 总线，在图形化连接总线时，就是在把各个外设的从 Avalon 接口挂载到 Nios II 的主 Avalon 总线上；若采用用户定制外设构建SOPC系统，所开发外设必须符合 Avalon总线规范，需要熟悉 Avalon 总线。下图为典型 Avalon 架构。
+若只使用 Quartus II 的 Qsys 自带的定制的 Avalon 总线外设构建SOPC系统，不需了解 Avalon 总线，因为这些自带外设的接口都已经写好了 Avalon 总线，在图形化连接总线时，就是在把各个外设的从 Avalon 接口挂载到 Nios II 的主 Avalon 总线上；若采用用户定制外设构建 SOPC 系统，所开发外设必须符合 Avalon 总线规范，需要熟悉 Avalon 总线。下图为典型 Avalon 架构。下图最右面上下两个外设框分别为用户自定义主端口和用户自定义从端口。
 
 ![典型Avalon架构](assets/典型Avalon架构.png)
+
+Avalon 主端口发起对 Avalon 总线的传输，Avalon 从端口响应来自 Avalon 总线的传输。主从端口对即在某次数据传输过程中，通过 Avalon 总线连接起来的主端口和从端口。
 
 ### 定制 外设 IP 核的框架
 
 ![定制 外设 IP 核的框架](assets/定制 外设 IP 核的框架.png)
 
-### 从端口信号类型
+### 从端口传输
+
+#### 从端口信号类型
 
 *p.s 其中前九个最常用；不带 "_ n" 后缀的都是高电平有效；还有流水线信号、突发信号、三态信号和流控信号等，没有列出。*
 
-*p.s 不带任何读写的最基本信号：clk、reset、chipselect、address 四个。*
+*p.s 不带任何读写功能的、最基本信号：clk、reset_n、chipselect、address 四个，即下表中的前四个。*
 
 *p.s address 地址的信号宽度最好都设置为 32 位宽，地址对齐的时候一一对应，最简便。*
 
-| 信号类型        | 信号宽度                | 方向 | 功能和使用描述                                               |
-| --------------- | ----------------------- | ---- | ------------------------------------------------------------ |
-| **clk**         | 1                       | IN   | Avalon从端口的同步时钟，所有信号必须与clk同步，异步外设可以忽略clk信号。 |
-| **reset_n**     | 1                       | IN   | 从外设复位信号。该信号有效时，从外设进入确定的复位状态。     |
-| **chipselect**  | 1                       | IN   | Avalon从端口的片选信号。                                     |
-| **address**     | 1~32                    | IN   | Avalon从端口的地址线，指定了从外设地址空间的字的地址偏移,要访问外设寄存器的地址，从0x00开始。 |
-| **read**        | 1                       | IN   | 读从端口的请求信号。若使用了该信号，则必须使用readdata或data信号。 |
-| **readdata**    | 1~1024                  | OUT  | 读传输时，输出到Avalon总线的数据线。若使用了该信号，则data信号不能使用。 |
-| **write**       | 1                       | IN   | 写从端口的请求信号。若使用了该信号，必须使用writedata或data信号，writebyteenable信号不能使用。 |
-| **writedata**   | 1~1024                  | IN   | 写传输时，来自Avalon总线的数据线。若使用了该信号，data信号不能使用。 |
-| **waitrequest** | 1                       | OUT  | 若从端口不能立即响应Avalon总线，用该信号来暂停Avalon总线。用于可变等待周期模式。 |
-| irq_n           | 1                       | OUT  | 中断请求信号。从外设的中断请求信号。                         |
-| byteenable      | 2, 4, 6, 8,16,32,64,128 | IN   | 按字节寻址访问使能信号。在对宽度大于8位的存储器进行写传输时，该信号用于选择特定的字节段。若使用了该信号，writedata信号必须使用，writebyteenable信号不能使用。 |
-| writebyteenable | 2, 4, 6, 8,16,32,64,128 | IN   | 相当于byteenable信号和write信号的逻辑与操作。write和byteenable信号不能使用。 |
+*p.s Avalon 接口规范没有对Avalon外设的信号指定命名规则；Avalon 外设的信号的名字可以与信号类型名相同，也可以遵循 用户 / 系统级的命名规则。*
+
+*p.s 下表只列基本信号，其它如流水线信号、突发信号、流控制信号、三态信号等不予列出。*
+
+| 信号类型        | 信号宽度             | 方向 | 功能和使用描述                                               |
+| --------------- | -------------------- | ---- | ------------------------------------------------------------ |
+| **clk**         | 1                    | IN   | Avalon从端口的同步时钟，所有信号必须与clk同步，异步外设可以忽略clk信号。 |
+| **reset_n**     | 1                    | IN   | 从外设复位信号。该信号有效时，从外设进入确定的复位状态。     |
+| **chipselect**  | 1                    | IN   | Avalon从端口的片选信号。                                     |
+| **address**     | 1~32                 | IN   | Avalon从端口的地址线，指定了从外设地址空间的字的地址偏移，要访问外设寄存器的地址，从0x00开始。 |
+| **read**        | 1                    | IN   | 读从端口的请求信号。若使用了该信号，则必须使用readdata或data信号。 |
+| **readdata**    | 1~1024               | OUT  | 读传输时，输出到Avalon总线的数据线。若使用了该信号，则data信号不能使用。 |
+| **write**       | 1                    | IN   | 写从端口的请求信号。若使用了该信号，必须使用writedata或data信号，writebyteenable信号不能使用。 |
+| **writedata**   | 1~1024               | IN   | 写传输时，来自Avalon总线的数据线。若使用了该信号，data信号不能使用。 |
+| **waitrequest** | 1                    | OUT  | 若从端口不能立即响应Avalon总线，用该信号来暂停Avalon总线。用于可变等待周期模式。 |
+| irq_n           | 1                    | OUT  | 从外设的中断请求信号。                                       |
+| byteenable      | 2,4,6,8,16,32,64,128 | IN   | 按字节寻址访问使能信号。在对宽度大于8位的存储器进行写传输时，该信号用于选择特定的字节段。若使用了该信号，writedata信号必须使用，writebyteenable信号不能使用。 |
+| writebyteenable | 2,4,6,8,16,32,64,128 | IN   | 该信号是byteenable信号和write信号的逻辑与操作。write和byteenable信号不能使用。 |
+| Begin transfer  | 1                    | IN   | 在每次传输的第一个周期内有效，使用用法取决于具体外设。       |
 
 32位从端口的 byteenable 信号功能定义表如下。
 
@@ -729,18 +741,20 @@ Intel FPGA Avalon 总线，其灵活特点有：
 | 0100             | 字节 2 的写操作    |
 | 1000             | 字节 3 的写操作    |
 
+IN （输入）类型的信号都是 Avalon 总线进行置位，从端口不能对其操作，从端口只能操作 OUT （输出）类型的信号。
+
 主端口信号类型表略。
 
-### 从端口传输
+#### 从端口传输模式列举
 
--   基本单周期读写时序传输；
--   流水线时序传输；
-    -   固定等待周期的读写传输；
-    -   可变等待周期的读写传输；（个人推荐常用）
-    -   具有建立时间和保持时间的固定等待周期的读写传输。（用于异步外设，了解）
--   流控制时序传输；
--   三态时序传输；
+-   基本单周期读写时序传输。固定等待周期的读写传输；可变等待周期的读写传输（个人推荐常用）。（只对从端口有）
+-   具有建立时间和保持时间的固定等待周期的读写传输（用于异步外设，了解）。（只对从端口有）
+-   流水线读传输（带固定延迟和可变延迟）。
+-   流控制时序传输。
+-   三态时序传输。
 -   突发时序传输。
+
+下面分别列举时序图。可以看时序图直接上手编写逻辑，但提醒还是先多参考参考，熟悉广泛使用的成熟的编写架构和思路。
 
 #### 基本单周期读写传输
 
@@ -754,6 +768,8 @@ A 沿为主端口发起 读传输，E 沿 为主端口取走要读的数据；�
 
 从端口通常在 检测到 clk 上升沿后，再检测 chipselect 和 read 两个信号同时为高时，就认为一次读传输。
 
+基本读传输适用于异步从外设，只要外设被选中或地址发生变化，外设就立刻返回数据。readdata 须在下一个时钟上升沿之前保持稳定。
+
 **写时序：**
 
 ![基本单周期写时序](assets/基本单周期写时序.png)
@@ -761,6 +777,8 @@ A 沿为主端口发起 读传输，E 沿 为主端口取走要读的数据；�
 A 沿为主端口发起 写传输，E 沿为主端口准备好要写的数据，在此沿从端口外设要取走数据。基本写传输适用于片内同步外设。
 
 从端口通常在 检测到 clk 上升沿后，再检测 chipselect 和 write 两个信号同时为高时，就认为一次读传输。
+
+基本写传输适用于片内同步外设。
 
 #### 固定等待周期的读写传输
 
@@ -792,7 +810,7 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL；第�
 
 写传输：等待周期允许从端口使用一个或多个时钟周期来捕获地址和writedata，等待周期会影响从端口的吞吐量。
 
-可变等待周期采用 waitrequest 信号实现，看时序图就容易明白。
+可变等待周期采用 waitrequest 信号实现，看时序图就容易明白。从端口必须在第一个总线时钟周期内设置 waitrequest 有效，直到从端口处理好数据再置 waitrequest 信号无效，然后总线在下一个时钟上升沿捕获数据，结束本次传输。
 
 **读时序：**
 
@@ -812,19 +830,87 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 
 具有建立时间和保持时间的固定等待周期的读写传输，用于异步外设，了解。
 
-具有建立时间和固定等待周期的从端口读传输，对于片外从端口异步外设，在主端口发出 read 有效信号之前，需要地址和 chipselect 等信号先稳定一段时间，这样异步外设可以在 read 上升沿开始根据其他信号做出反应，而不会引起冒险竞争，因为在 read 上升沿时其他信号均已稳定；
+具有建立时间和固定等待周期的从端口读传输，对于片外从端口异步外设，在主端口发出 read 有效信号之前，需要地址和 chipselect 等信号先稳定一段时间，然后将 read 信号置位有效，这样异步外设可以在 read 上升沿开始根据其他信号做出反应，而不会引起冒险竞争，因为在 read 上升沿时其他信号均已稳定。可以设置固定等待周期。即**具有建立时间、固定等待周期的读传输**（建立时间和可变等待周期不能同时采用）。下图中，上面的时序图，Tsu 即建立时间。
 
-具有建立时间和保持时间的从端口写传输，对于片外从端口异步外设，在主端口发出 write 有效信号之前，需要 address、byteenable、writedata 和 chipselect 信号保持几个周期的稳定时间。
+具有建立时间和保持时间的从端口写传输，对于片外从端口异步外设，在主端口发出 write 有效信号之前，需要 address、byteenable、writedata 和 chipselect 信号保持几个周期的稳定时间。即**具有建立时间、固定等待周期、保持时间的写传输**。下图中，下面的时序图，C 沿到 E 沿 之间的时间 即建立时间，E 沿到 F 沿 之间的时间 即保持时间。
 
-对于一些 ram 等芯片的时序，设置的当可以把 Avalon 总线直连 此类芯片的总线接口。
+端口读传输和写传输的建立时间必须相同。
+
+对于一些 ram 等芯片的时序，设置的当可以把 Avalon 总线 直连 此类芯片的总线接口，即该从端口时序通常用于片外外设。
 
 ![建立 保持时间时序图](assets/建立 保持时间时序图.png)
 
 “建立时间、固定等待周期和保持时间” 属性在 Qsys 中设置；端口读传输和写传输的建立时间必须相同；建立时间和可变等待周期不能同时采用。
 
+### 主端口传输
 
+#### 主端口信号类型
 
+*p.s Avalon 主端口必须有三个信号：clk、address、waitrequest。*
 
+*p.s 下表只列基本信号，其它如流水线信号、突发信号、流控制信号、三态信号等不予列出。*
+
+| 信号类型        | 信号宽度                    | 方向 | 必需 | 功能及使用描述                                               |
+| --------------- | --------------------------- | ---- | :--- | ------------------------------------------------------------ |
+| **clk**         | 1                           | In   | Yes  | Avalon**主端口的同步时钟，**  所有的信号必须与**clk同步。**  |
+| **waitrequest** | 1                           | In   | Yes  | 迫使主端口等待，  直到**Avalon总线准备好处理传输。**         |
+| **address**     | 1~32                        | Out  | Yes  | 从**Avalon主端口到Avalon总线的地址线。**  表示的是**一个字节的地址，**  主端口只发出字边界的地址。 |
+| read            | 1                           | Out  | No   | 主端口的读请求信号。  主端口不执行读传输时不需要该信号。  若使用了该信号，**readdata或data信号线必须使用**。 |
+| readdata        | 8,16,32,64,128,256,512,1024 | In   | No   | 读传输时，来自**Avalon总线的数据线。**  当主端口不执行读传输时，不需要该信号。  若使用了该信号，**read信号必须使用，data信号不能使用。** |
+| write           | 1                           | Out  | No   | 主端口的写请求信号，不执行写传输时不需要该信号。**使用该信号，writedata或data信号必须使用。** |
+| writedata       | 8,16,32,64,128,256,512,1024 | Out  | No   | 写传输时，到Avalon交换架构的数据线。当主端口不执行写传输时，不需要该信号。**使用该信号，write信号必须使用，data信号不能使用。** |
+| byteenable      | 2,4,6,8,16,32,64,128        | Out  | No   | 字节使能信号。在对宽度大于8位的存储器进行写传输时，该信号用于选择特定的字节段。读传输时，主端口必须置所有的byteenable信号线有效。 |
+| Irq             | 1,32                        | In   | No   | 中断请求信号。  如果**Irq信号是一个32位的矢量信号，那么它的每一位直接对应一个从端口上的中断信号；**如果**Irq是一个单比特信号，那么它是所有从外设的Irq信号的逻辑或，中断优先级irqnumber信号确定。** |
+| irqnumber       | 6                           | In   | No   | 在**irq信号为单比特信号时，使用irqnumber信号来确定外设的中断优先级。**  Irqnumber**的值越小，所代表的中断优先级越高。** |
+| reset           | 1                           | In   | No   | 全局复位信号。实现跟外设相关。                               |
+| resetrequest    | 1                           | Out  | No   | 允许外设将整个**Avalon系统复位。**                           |
+
+#### 主端口传输模式列举与参数说明
+
+主端口传输模式列举：
+
+-   单 / 可变等待周期 的读写传输。
+-   流水线读传输（带可变延迟）。
+-   流控制时序传输；
+-   三态时序传输；
+-   突发时序传输。
+
+主端口的等待周期、建立时间、保持时间属性：
+
+- 等待周期：主端口使用waitrequest信号接受Avalon总线的不确定等待周期。主端口被动地支持可变等待周期，不支持固定等待周期。
+- 建立时间和保持时间：主端口不使用建立和保持时间属性。若一个目标从外设有建立和/或保持时间属性，Avalon总线管理主从端口对的信号时序的转换。
+
+#### 主端口 单/可变周期 的读传输
+
+**主端口 单等待周期 的读传输**
+
+主端口在 clk 上升沿后紧接着 设置目标外设地址 address 和 置 read 有效，**等待 waitrequst 信号失效** 便可从 readdata 取数据。
+
+![主端口 单周期 的读传输](assets/主端口 单周期 的读传输.png)
+
+**主端口 可变等待周期 的读传输**
+
+![主端口 可变周期 的读传输](assets/主端口 可变周期 的读传输.png)
+
+#### 主端口 单/可变周期 的写传输
+
+**主端口 单等待周期 的写传输**
+
+![主端口 单等待周期 的写传输](assets/主端口 单等待周期 的写传输.png)
+
+**主端口 可变等待周期 的写传输**
+
+![主端口 可变等待周期 的写传输](assets/主端口 可变等待周期 的写传输.png)
+
+### 其它 Avalon 传输
+
+这里略。
+
+- 流水线读传输。
+- 流控制时序传输；
+- 三态时序传输；
+- 突发时序传输。
+- 中断与复位，地址对齐等内容。
 
 ------
 
@@ -832,21 +918,23 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 
 *p.s 以下为列举日常项目中用到的可以开源的部分模块源码（Verilog or VHDL）或者实现思想（就是留个坑，但还没写）。*
 
--   [Github 上有哪些优秀的 Verilog/FPGA 项目？](https://www.zhihu.com/question/348990787)
+-   [Github 上有哪些优秀的 Verilog/FPGA 项目？](https://www.zhihu.com/question/348990787) 有很多好的推荐项目和回答！
 
--   [Alex Forencich 的 GitHub 主页](https://github.com/alexforencich)
+-   [Alex Forencich 的 GitHub 主页](https://github.com/alexforencich) 开源了许多 Verilog IP，[Verilog IP cores - Alex Forencich](http://www.alexforencich.com/wiki/en/verilog/start)。
 
--   [pConst / basic_verilog 的常用代码](https://github.com/pConst/basic_verilog)
+-   [FreeCores (github.com)](https://github.com/freecores) A home for open source hardware cores。
+
+-   [pConst / basic_verilog 的常用代码](https://github.com/pConst/basic_verilog)。
 
     文件位置：./pConst 的 basic_verilog-master.zip
 
--   [Analog Devices, Inc](https://github.com/analogdevicesinc)
+-   [Analog Devices, Inc](https://github.com/analogdevicesinc)。
 
--   [OpenCores](https://opencores.org/)
+-   [OpenCores](https://opencores.org/)。
 
--   [李锐博恩 Verilog编程实例](https://www.zhihu.com/column/c_1251279662770712576)
+-   [李锐博恩 Verilog编程实例](https://www.zhihu.com/column/c_1251279662770712576)。
 
--   [NingHeChuan 的 ip_lib ——构建自己的IP库，搭建起你的数字积木](https://github.com/NingHeChuan/Digital_Front_End_Verilog/tree/master/ip_lib)
+-   [NingHeChuan 的 ip_lib ——构建自己的IP库，搭建起你的数字积木](https://github.com/NingHeChuan/Digital_Front_End_Verilog/tree/master/ip_lib)。
 
     文件位置：./FPGA学习和规范 的参考源码/NingHeChuan 的 ip_lib/
 
@@ -858,7 +946,7 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 
   思想：~~当“按键可以检测标志位”有效时，按下的边沿触发启动一计数器，同时标记“按键可以检测标志位”失效，当计数器计数到一定值后，再检测按键是否处于按下状态，如果是则标记“按键有效”标志位做输出，如果不是则停止计数，同时标记“按键可以检测标志位”有效，同时清空计数值。~~ 
 
-  sopc 读取外部按键设计思路，硬件上先实现一个去抖，然后把无毛刺的稳定的信号传给 nios ii 输入脚，然后 nios ii 里面实现一个外部引脚沿中断。
+  sopc 读取外部按键设计思路，引脚输入后先在FPGA的逻辑上先实现一个去抖，然后把无毛刺的稳定的信号传给 nios ii 输入脚，然后 nios ii 里面实现一个外部引脚沿中断。
 
   文件位置：./FPGA学习和规范 的参考源码/按键消抖/
 
@@ -906,7 +994,13 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 
 -   ...
 
-    
+------
+
+## 2.5 数字电路设计实用技术
+
+《硬件架构的艺术：数字电路的设计方法与技术》，该书的译者序：“...实用且有效...作者系统打造出一栋由实用技术组成的大厦......一切从解决问题出发，解释怎么做，并给出原理图和代码，以及解决方案......本书主要内容涉及**时钟和复位、多时钟域设计、时钟分频器、低功耗设计技术、流水线技术、字写顺序、消抖技术和电磁兼容性等内容**”。该书针对以上方面给出了很多设计策略和实用方法，或者说对很多模块的设计给出了推荐的 HDL 和电路，适合当作工具书手办阅读。该书罗列了很多应该避免的有隐患的（甚至仿真的时候不容易发现而实际运行时候容易出问题的种种情况）综合后的数字逻辑电路，并由此给出了很多应该避免的 HDL 写法，以及查看综合后电路是否有已知的隐患；并也给出了推荐的数字电路形式。该书在网上容易下载到电子版。
+
+
 
 ------
 
@@ -959,9 +1053,12 @@ FPGA的时序分析和时序约束的资料参考：
 
 *p.s 本文一部分来自自己总结的经验，一部分来自参考。参考不是照搬，是选择我认为的精髓，每个人不同，所以推荐看一下这些参考，TA们都提供了很好的技巧。当然也许还有很多更好的资料，可以留言推荐。*
 
--   [《FPGA设计-实战演练（逻辑篇）》 吴厚航](http://www.tup.com.cn/bookscenter/book_06045601.html#) 在“资源下载”栏可下载随书课件和源码
--   [知乎 硅农](https://www.zhihu.com/people/ninghechuan)
--   [Verilog设计的原则和技巧和IP核的使用](https://blog.csdn.net/dengshuai_super/article/details/52528407)
+*p.s 正文中某些段落内容的旁边已经加注了参考和引用源，这里列出剩下的引用源。*
+
+-   [《FPGA设计-实战演练（逻辑篇）》 吴厚航](http://www.tup.com.cn/bookscenter/book_06045601.html#) 在“资源下载”栏可下载随书课件和源码。
+-   [知乎 硅农](https://www.zhihu.com/people/ninghechuan)。
+-   [Verilog设计的原则和技巧和IP核的使用](https://blog.csdn.net/dengshuai_super/article/details/52528407)。
+-   《基于FPGA的嵌入式开发与应用（徐光辉 程东旭 等编著）》。
 -   还可以参考但还没看的：
     - 《FPGA设计-实战演练（高级技巧篇）》王敏志
     - ...
