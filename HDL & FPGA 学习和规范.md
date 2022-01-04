@@ -1,8 +1,8 @@
-
-
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
-
 # HDL & FPGA 学习和规范（HDL-&-FPGA- study）
+
+<p align="center">
+    <img src="assets/CC-BY-NC-SA-4.0-88x31.png" alt="CC BY-NC-SA 4.0 88x31"  />
+</p>
 
 ***p.s 温馨提示：点个 star 收藏一下回头慢慢看；或者下(白)载(嫖)下来，在 Typora 中阅读；[本文知乎地址](https://zhuanlan.zhihu.com/p/356856108) ；整理不易，请多支持。***      
 
@@ -27,6 +27,8 @@
 ### Altera FPGA 基本要素
 
 *p.s 过于基础的概念不提，这不是入门帖。入门可以跳到 “4 值得跟着的学习网站” 章节进行摄入。*
+
+*p.s 以下以 Cyclone IV E 系列 FPGA 为例。*
 
 -   FPGA基础资源选择：逻辑单元（LE）数量，内嵌存储器（M9K）数量（总RAM Bits数），乘法器数量，PLL数量，I/O数量，全局时钟网络数量等。
 
@@ -87,7 +89,7 @@
 #### 顶层设计的要点
 
 1. 单个模块尽量使用一个时钟源；对于多个模块要认真、清楚的划分时钟域；跨时钟域的信号一定做同步处理（D触发器同步）；片内的 PLL / DLL 资源尽量利用起来；至少要对所有时钟信号加上简单的时序约束，不能没有。
-2. 数据传递的两边速率不一致要在中间加 FIFO 缓存。
+2. 数据传递的两边速率不一致要在中间加 缓存机制，常见的如 FIFO 和 乒乓缓存，后者详见 “设计技巧” 小节里的 “乒乓操作” 部分。
 3. 复杂逻辑/时序逻辑要使用 FSM （有限状态机）方式来写，在下面的 “模块收集” 里面有状态机的例子。
 4. 条件逻辑/状态图等一定要遍历所有状态，一定，防止不可预料的错误综合结果，对于 if 要有 else，对于 case 要有 default。
 5. 对于仿真：先对每一个单个模块仿真，要求代码覆盖率、条件分支覆盖率、表达式覆盖率必须达到 100%，这三个可以通过 Modelsim 查看；子系统仿真，将多个模块组合在一起进行仿真，覆盖率尽量高；系统级仿真，软硬件整板联调。仔细设计仿真激励文件。
@@ -96,25 +98,19 @@
 
 #### Verilog HDL
 
-##### 语法基础
+##### 语法规范
 
 -   No.1，层次化设计，IP化设计。自写小IP尽量参数化、可重用，方便日后搭建数字积木。
-
 -   顶层文件名与顶层模块名一致。
-
 -   模块的定义名加尾缀"_ module"，输入输出的信号名各加后缀"_ in"和"_ out"，低电平有效的信号加尾缀"_ n"，时钟信号使用"clk _"或"Clk _"前缀，复位信号使用"rst _"前缀，使能信号使用"en"或者"Enable"标识等。
-
--   定义模块的时候，定义输入输出信号时就带好"input" 、 "output" 和 "reg"的类型修饰。
-
+-   定义模块的时候，定义输入输出信号时就带好 "input"/“in” 、 "output"/“out” 和 "reg" 等的标识修饰。
 -   一个 tab 四个空格。
-
 -   用 tab 划分清晰的语句层次，用 tab 对齐多排赋值操作等。
-
 -   begin 和 end 语句块修饰词在竖方向对齐。
-
 -   操作符等前后用一个空格做间隔。
+-   注释齐全，对自己和别人负责。
 
-- 注释齐全，对别人负责。
+[Verilog 教程 | 菜鸟教程 (runoob.com)](https://www.runoob.com/w3cnote/verilog-tutorial.html)。
 
 - 以下用一例子包含 verilog 常用语法。
 
@@ -150,7 +146,7 @@
    wire 用法总结
       1.wire可以在Verilog中表示任意宽度的单线/总线
       2.wire可以用于模块的输入和输出端口以及一些其他元素并在实际模块声明中
-      3.wire不能存储值（无状态），并且不能在always @块内赋值（=或<=）左侧使用。
+      3.wire不能存储值（无状态），并且不能在always @ 块内赋值（=或<=）左侧使用。
       4.wire是assign语句左侧唯一的合法类型
       5.wire只能用于组合逻辑
    reg 用法总结
@@ -171,13 +167,13 @@
   	数据类型：
   	5'o37		5 位八进制数，二进制为 11111
   	10'o37		右对齐，高位补 0
-  	10'bx0x1 	左边补 x, x x x x x x x 0 x 1，x 为表未知状态
+  	10'bx0x1 	左边补 x，完整即 x x x x x x x 0 x 1，x 为表未知状态
   	4'b1x_01	4 位二进制数，为 1 x 0 1，下划线方便阅读
   	4'hz  		4 位z(扩展的z) , 即 zzzz，z 表高阻状态
   	parameter SEC_TIME = 48_000_000; 十进制数
   	位长不能够为变量表达式，可以为预编译、parameter 的表达式
   	
-  	verilog 中 整形、浮点型等变量相当于 define 或者 parameter 的作用，这里只用 后二者即可了
+  	verilog 中 整形、浮点型等变量的 定义字 相当于 define 或者 parameter 的作用，这里只用 后二者即可了
   	
   	字符串
   	reg [8*14 : 1]Message = "INTERNAL ERROR"; I 为第 1 位，N 为 第 2 位，依此类推
@@ -406,19 +402,57 @@
 ##### 编写规范
 
 -   以时钟信号同步的时序逻辑编写时尽量只用非阻塞赋值"<="（同步执行），用阻塞赋值"="（顺序执行）可能会产生bug，后者一般用于组合逻辑设计。尽量避免使用异步信号（比如异步复位等），即慎用或少用 assign 语句连接逻辑，而尽量把所有逻辑在 always @(*) begin ... end 中实现；如果传入一个异步信号，尽量加寄存器（D触发器）用时钟进行锁存。
+
 -   尽量大部分功能使用时序逻辑电路设计，使用行为语句 + 时序逻辑电路描述（always@ + <=） 完成建模（对于 reg 类型变量）。对于组合逻辑电路描述，简单逻辑可以使用连续赋值语句（assign ）（对于 wire 类型变量），对于复杂组合逻辑使用 always@( 所有敏感信号 ) + = 的语句。
+
+-   Always 块的一般形式为：
+
+    ```verilog
+    /* 功能描述 */
+    always @(negedge clk_in or negedge i2s_module_rst) /* 在时钟的边沿触发，再加一个复位触发条件 */
+        begin
+            if(!i2s_module_rst) /* 先判断是否复位 */
+                begin /* 在复位块中，因该对 else 情况里面的所有 被幅值的 reg 变量进行 复位，都设置为复位值 */
+                    WS <= 1'b1; /* 添加语句描述 */
+                end
+            else
+                begin /* 保持格式 */
+                    if(one_flame_counter < half_flame_count)
+                        begin
+                            WS <= 1'b0;
+                        end
+                    else
+                        begin
+                            WS <= 1'b1;
+                        end
+                end
+        end
+    ```
+
 -   从可综合性角度考虑，应慎用各种循环语句（for，while 等），大部分情况下，用于设计的循环语句可以用其他方式所替代。并行块（fork … join）不可综合且容易出现竞争问题，在仿真设计中不建议使用。
+
 -   逻辑表达式不要写的太长，可以简化逻辑（卡诺图法或者公式法，或者 multisim 里面的逻辑分析仪简化逻辑表达式）或者分多行去写，即不要让 RTL 图中某一段逻辑链过于长；长逻辑表达式用括号划分清关系减少歧义。
--   为避免组合逻辑的输出出现“毛刺”，即冒险或竞争的发生，可以在输出加一个寄存器（D触发器），即让输出与时钟同步，当所有信号都到达寄存器（D 触发器）的输入后，时钟再“打一拍”才能输出，这样避免最后的输出有“毛刺”；避免锁存器，使用触发器。
+
+-   竞争与冒险的概念：逻辑电路中，由于门的输入信号经过不同的延时，到达门的时间不一致，这种情况叫竞争；由于竞争而导致输出产生毛刺（瞬时错误），这一现象叫冒险。为避免组合逻辑的输出出现“毛刺”，即冒险或竞争的发生，可以在输出加一个寄存器（D触发器），即让输出与时钟同步，当所有信号都到达寄存器（D 触发器）的输入后，时钟再“打一拍”才能输出，这样避免最后的输出有“毛刺”；避免锁存器，使用触发器。
+
 -   case 语句必须带 default 分支，照顾到 case 的所有情况。
+
 -   所有的内部寄存器都应该能够被复位，尽量每个模块都要有时钟同步复位信号（不要用异步复位）。
+
 -   设计逻辑尽量避免不定态 x 或者高阻态 z 进入参与关键逻辑区域，仿真时就注意。
+
 -   移位操作直接用位拼接。
+
 -   同一个信号在很多地方使用，比如参数和时钟等等，应该在每一个用到的地方加一个寄存器（D触发器）用于中继缓冲，避免一个信号扇出信号数量过多。
+
 -   对于有选择和加法、比较等逻辑块，编写时应让信号先经过选择器，再送入乘法器、加法器或比较器等，即“先选后比，先选后加，先选后乘”。面积：乘法器 > 加法器 > 比较器 > 选择器。
+
 -   尽量不要用减法和除法（一个考虑多，一个面积大）；乘以常数直接用“*”，编译器会优化；两变量乘法用硬件乘法器IP。
+
 -   使用 function 函数语句对复杂数值运算打包（它不能包含任何时间控制语句）；函数（function）可以调用其他函数（function）但不能调用任务（task），（function）函数由 任务（task）或其它 module 中调用。使用 task 语句写可重用的、固定下来的组合逻辑（不能有时序逻辑 always，不能有 wire 类型数据，这就是和 module 的区别；任务（task）可以调用其他任务（task）和函数（function），任务（task）只能在 module 中的语句块中被调用）。
+
 -   可以用 generate for 写 同结构不同参数 的 always@(*) 等代码，用 generate if/case 写一些随着需求可变的代码或 IP 核。 generate 语句属于预编译语句。
+
 -   常用的，时钟上升沿锁存数据，时钟下降沿改变数据。
 
 ##### 设计技巧
@@ -512,7 +546,7 @@
 -   针对硬件引脚固定的项目，先在 Pin Planner 写好所有引脚定义，然后导出，在 Pin Planner 界面里面点 左上角的 File 然后 Export 即可。以后在相同硬件平台创建新工程时可以直接导入这个引脚配置，在 Assignments 里面的 Import Assignments... 导入即可 。
 -   综合、布局布线后会生成“报告” ，里面一般会有 Warnings 和 Errors。这些报告信息会辅助你修改你设计中的 bug。
 -   三种优化模式（IDE 软件里可选）：针对速度的优化；针对面积的优化；针对功耗的优化。
--   检查 Quartus II 软件对于未使用引脚的处理。步骤：打开 Device -> Device and Pin Options，新打开窗口中找到 Unused Pins，只能选两个比较安全的选项：As input tr-stated with week pull-up 或者 As input tri-stated。
+-   检查 Quartus II 软件对于未使用引脚的处理。步骤：打开 Device -> Device and Pin Options，新打开窗口中找到 Unused Pins，只能选两个比较安全的选项：As input tr-stated with week pull-up 或者 As input tri-stated。在 Dual-Purpose Pins 里面，可以设置所有的 配置相关的 PIN 为 Regular I/O。
 
 ##### ModelSim 仿真
 
@@ -533,7 +567,7 @@
   module xxx_vlg_tst();
   
   // general purpose registers
-  reg eachvec; /* 这个必须有。。。 */
+  reg eachvec; /* 这个必须有。。。否则仿真不显示时序图 */
   
   /* 这里定义模块内各种 wire 和 net */
   
@@ -584,19 +618,52 @@
 
 ##### 时钟信号约束
 
-1. 对于时钟信号的约束，必须要做，最基本要做的是使用 “TimeQuest timing Analyzer” 把设计内的所有时钟信号（包括晶振输入的时钟和 PLL 时钟）都约束一下。以下是具体步骤。
+对于时钟信号的约束，必须要做，最基本要做的是使用 “TimeQuest timing Analyzer” 把设计内的所有时钟信号（包括晶振输入的时钟和 PLL 时钟）都约束一下。以下是具体步骤。
 
-   关于其他输入、输出引脚的约束以及外接器件的 Timing 约束比较深奥（内容多，但不难理解），更多内容可详看 “3 时序分析和约束” 一节。
+关于其他输入、输出引脚的约束以及外接器件的 Timing 约束比较深奥（内容多，但不难理解），更多内容可详看 “3 时序分析和约束” 一节。
 
-2. 打开 Timing Analyzer，新建一个 sdc 文件。以下两个步骤是 根据设置生成 sdc 约束文件，里面是约束的命令语句。
-
-3. 选择菜单栏 Netlist -> Create Timing Netlist，弹出对话框保持默认（保持选择 Post-fit），确认后下一个对话框添加要约束的时钟，在 Targets 选择 Quartus II 工程里面的 一个时钟信号，然后填入 Clock name（随意，可与 工程内时钟信号名保持一致），Period 为该时钟的周期，如实填写，上升下降时间都保持默认为 0 即可，再点 Run。关闭对话框。
-
-4. 左边 Task 栏里面 依次双击 Update Timing Netlist 和 Write SDC File，第二个是保存 sdc 文件，选择一个合适的文件名和位置。然后可以关闭 Timing Analyzer。
-
+1. 打开 Timing Analyzer。
+2. 选择菜单栏 Netlist -> Create Timing Netlist，弹出对话框保持默认（保持选择 Post-fit），确认。
+3. 添加要约束的时钟，在标题栏选择 Constrains 里面选择 Creat Clock 打开对话框，Targets 选择 Quartus II 工程里面的 一个时钟信号，然后填入 Clock name（随意，可与 工程内时钟信号名保持一致），Period 为该时钟的周期，如实填写，上升下降时间都保持默认为 0 即可，再点 Run。关闭对话框。
+4. 左边 Task 栏里面 依次双击 Update Timing Netlist 和 Write SDC File，第二个是保存 sdc 文件，选择一个合适的文件名和位置。然后可以关闭 Timing Analyzer。根据设置生成 sdc 约束文件，里面是约束的命令语句。
 5. 在 Quartus II 工程中添加自己生成的 sdc 文件，点击 Assignments -> Settings 里面的 Timing Analyzer，添加上面生成的 sdc 文件，关闭。可以看到 Quartus II 工程中 File 多了该 sdc 文件。然后对 Quartus II 工程 全编译。
+6. 再进入 Timing Analyzer，左边 Task 栏下面 先双击 Read SDC File，再找到左边 Task 栏下面 Macros 里面的 Report All Core Timing，双击打开，可以在右边栏看到 综合布线后各个信号线的传递裕量（Slack），为从小到大配列，该值为正的即可，越大越好。左边的其他栏目可以看到建立时间、保持时间的裕量等更多信息。
 
-6. 再进入 Timing Analyzer，找到左边 Task 栏下面 Macros 里面的 Report All Core Timing，双击打开，可以在右边栏看到 综合布线后各个信号线的传递裕量（Slack），为从小到大配列，该值为正的即可，越大越好。左边的其他栏目可以看到建立时间、保持时间的裕量等更多信息。
+教程参考：[ quartus II关于时钟约束_ a346544987的博客-CSDN博客 _quartus时钟约束](https://blog.csdn.net/a346544987/article/details/113667128)。
+
+##### SignalTap II 使用
+
+SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部部分逻辑和 RAM 资源，进行存储，并通过 JTAG 发送到 PC 上的 SignalTap II 软件来观察时序图，其采样深度会受 FPGA 内部 RAM 限制，一般够用。
+
+1. 先不用修改 Verilog HDL 源文件。在 Quartus II 主界面选择菜单栏的 Tools->SignalTap II Logic Analyzer，打开 SigalTap II 软件，如下图所示（图源自正点原子的《开拓者FPGA 开发指南》），双击 节点列表和触发条件 栏 的空白区域来添加要监测的信号。首先将 Filer 设置为 SignalTap II：pre-synthesis（与 Verilog 设计中存在的信号最为贴近，方便寻找信号），再点击 List，完成信号添加点 OK 即可。
+
+   <img src="assets/SignalTapII界面.png" alt="SignalTapII界面" style="zoom:50%;" />
+
+3. 如果我们发现添加的信号变成了红色，或者有些 reg 与 wire 定义的信号可以观察，有些不可以，这是因为 reg 与 wire 被 Quartus 软件优化掉了，导致无法使用 SignalTap 观察。一种简便的方法是 对 这些信号添加 不要优化掉的注释来标记，如下所示，注意注释是加在 分号 前面。然后再在 SignalTap 软件里面添加试试。
+
+   ```verilog
+   wire [23:0] counter/*synthesis keep*/; 
+   reg  [23:0] counter/*synthesis noprune*/;
+   ```
+
+4. 在 SignalTap 右边的 Signal Configuration 栏里面设置采样时钟、采样深度、采样方式、触发方式、触发条件等。必须设置的是 采样时钟 Clock 和 采样深度 Sample depth，采样深度可以设置为 2K。如果不需要设置 采样方式和触发等，其它选项保持默认即可。
+
+5. 在 SignalTap 软件左上角保存 软件设置文件 .stp，接下来会弹出是否将分析文件添加至工程的页面，点 Yes 即可，可以在 Quartus 软件左边的工程文件栏看到 刚刚添加 的 SignalTap 文件 .stp，也可以在 Assignments -> Settings 里面的 Signal Tap Logic Analyzer 里面 看到 Enable Signal Tap Logic Analyzer 选项 被打勾，并且 SignalTap 文件 .stp 被添加了进来。
+
+6. Quartus 软件里面 对工程进行 全编译。
+
+7. 给板子上电，连接好 Blaster，回到 SignalTap 软件界面，在软件右上角 的 JTAG 设置区 点 Setup 找到 并选择 USB-Blaster[USB-0]，点 OK，再在 JTAG 设置区 点 Scan Chain 来扫描到 FPGA 芯片，然后在 SOF Manager 的右边 添加 刚刚全编译好的 .sof 工程文件，然后点 下载标志的按钮来下载。
+
+8. 下载完后，点击 SignalTap 软件 工具栏 中的开始分析图标（Instance Manager 右边的第一个按钮），即采样一次（以设置的采样深度来采集一次），从左到右三个按钮分别为 采样一次、循环采样 和 停止。
+
+9. 节点列表和触发条件 栏的 下面 切换到 Data 页面，即可看到信号的采样的时序图，鼠标左键单击放大、右击缩小。信号的名字上右击 选择 Display Format 可以切换 显示 16 进制或 其它进制。
+
+10. 切换信号的触发方式，在 SignalTap 信号列表 Setup 一栏中，右击 信号的 Trigger Conditions 方框内的图标，其中：Don’t Care 表示不关心，即不设置触发方式；Low表示低电平触发；Falling Edge表示下降沿触发；Rising Edge表示上升沿触发；High表示高电平触发；Either Edge表示双沿触发。然后再点 开始分析按钮 的 采样一次按钮，这是采样会等到 信号的 触发事件发生后再开始采集。因此触发可以给 外部按键信号 或 关键的信号 来触发开始采样。对于多位的寄存器可以设置某个 计数值 来触发采样。
+
+推荐教程：
+
+- [【原创FPGA教程】Quartus II的奇幻漂流V1.0——手把手教你使用Quartus II_VITO_ 铁掌北京漂 _新浪博客 (sina.com.cn)](http://blog.sina.com.cn/s/blog_bff0927b0102v0u3.html)，第 5 章 调试利器 SignalTap II 的使用，比较详细。
+- 正点原子 FPGA 开发板 配套教程书，开拓者FPGA 开发指南等 的 SignalTap II 软件的使用 章节，比较粗略。
 
 ##### 记录 QII 的 IP 核使用
 
