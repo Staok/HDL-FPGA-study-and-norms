@@ -13,4 +13,4 @@
 正文请看（白嫖）：
 
 - Github 地址：[HDL & FPGA 学习和规范](https://github.com/Staok/HDL-FPGA-study-and-norms/blob/main/HDL%20%26%20FPGA%20%E5%AD%A6%E4%B9%A0%E5%92%8C%E8%A7%84%E8%8C%83.md)。
--  Gitee  地址：[HDL & FPGA 学习和规范](https://gitee.com/staok/HDL-FPGA-study-and-norms/blob/main/HDL & FPGA 学习和规范.md)。
+-  Gitee  地址：[HDL & FPGA 学习和规范](https://gitee.com/staok/HDL-FPGA-study-and-norms/blob/main/HDL%20&%20FPGA%20%E5%AD%A6%E4%B9%A0%E5%92%8C%E8%A7%84%E8%8C%83.md)。
