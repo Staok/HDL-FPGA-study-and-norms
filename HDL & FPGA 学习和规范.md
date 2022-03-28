@@ -24,7 +24,7 @@
 
 ## O.0 值得跟着的学习网站
 
--   SOC FPGA 和 FPGA 等各种开发板开源资料（网上可以找到全套资料）：如 正点原子、野火、黑金、Allegro 等开发板（考验资料搜集能力的时候到了）。推荐这种学习方式。
+-   SOC FPGA 和 FPGA 等各种开发板开源资料（网上可以找到全套资料）：如 正点原子、野火、黑金 等开发板（考验资料搜集能力的时候到了）。推荐这种学习方式。
 -   [小梅哥 B站视频（Verilog & FPGA基础，SOPC，SOC以及其他常用协议](https://space.bilibili.com/476579378) 缺点：视频太~长了。
 -   [LeiWang1999/FPGA: 帮助大家进行FPGA的入门，分享FPGA相关的优秀文章，优秀项目 (github.com)](https://github.com/LeiWang1999/FPGA) 记录比较全面。
 
@@ -52,6 +52,17 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 - [FPGA简介 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/401954780)。
 - [Verilog知识大全 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/444188673)。
 - etc
+
+## 1.5 开源 & 学习 FPGA 开发板
+
+以下 FPGA 开发板提供了完善的 软硬件资料，参考意义极大。
+
+- [正点原子FPGA开发板 — 正点原子资料下载中心 1.0.0 文档 (openedv.com)](http://www.openedv.com/docs/boards/fpga/index.html)。
+- [FPGA系列产品 — 野火产品资料下载中心 文档 (embedfire.com)](https://doc.embedfire.com/products/link/zh/latest/fpga/index.html)。
+- [黑金 FPGA 开发板 - 芯驿电子科技(上海)有限公司 (alinx.cn)](http://www.alinx.cn/index.php/default/category/23/PRODUCT.html)。
+- [Xilinx FPGA板卡 - 米尔科技 (myir-tech.com)](http://www.myir-tech.com/product/index.asp?anclassid=90)。
+- [Terasic - DE 系列母板](http://www.terasic.com.cn/cgi-bin/page/archive.pl?Language=China&CategoryNo=178)，terasIC 开源其开发板的原理图和例程，作为参考设计很不错。
+- [STEP FPGA开源社区\]](https://www.stepfpga.com/doc/fpga_start)，目前开源好几款FPGA开发板和各种参考案例、教程，比较丰富。
 
 ## 1 HDL & FPGA 值得注意的
 
@@ -1046,11 +1057,6 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 - 中断与复位，地址对齐等内容。
 
 ------
-
-## 1.5 开源 FPGA 板
-
-- [Terasic - DE 系列母板](http://www.terasic.com.cn/cgi-bin/page/archive.pl?Language=China&CategoryNo=178)，terasIC 开源其开发板的原理图和例程，作为参考设计很不错。
-- [STEP FPGA开源社区\]](https://www.stepfpga.com/doc/fpga_start)，目前开源好几款FPGA开发板和各种参考案例、教程，比较丰富。
 
 ## 2 模块收集（不定期更新）
 
