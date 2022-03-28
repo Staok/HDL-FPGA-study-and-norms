@@ -22,6 +22,37 @@
 
 ------
 
+## O.0 值得跟着的学习网站
+
+-   SOC FPGA 和 FPGA 等各种开发板开源资料（网上可以找到全套资料）：如 正点原子、野火、黑金、Allegro 等开发板（考验资料搜集能力的时候到了）。推荐这种学习方式。
+-   [小梅哥 B站视频（Verilog & FPGA基础，SOPC，SOC以及其他常用协议](https://space.bilibili.com/476579378) 缺点：视频太~长了。
+-   [LeiWang1999/FPGA: 帮助大家进行FPGA的入门，分享FPGA相关的优秀文章，优秀项目 (github.com)](https://github.com/LeiWang1999/FPGA) 记录比较全面。
+
+文档形式的教程：
+
+-   [Quartus II的奇幻漂流V1.0——手把手教你使用Quartus II](http://blog.sina.com.cn/s/blog_bff0927b0102v0u3.html) 推荐。
+-   [Nios II的奇幻漂流V2.0——基于Qsys的Nios II设计教程](http://blog.sina.com.cn/s/blog_bff0927b0102uzmh.html) 推荐。
+-   [Nios II入门实验](https://www.cnblogs.com/yuphone/category/276816.html)。
+-   [小梅哥 FPGA资料专区](http://www.corecourse.cn/forum.php?mod=forumdisplay&fid=41)。
+-   [小梅哥 - 博客园](https://www.baidu.com/link?url=CYD8ZBPmHJP4lnc7VKOm_uIU55a5sTGQWKyKYCixBTbitt-DLiyDpbSK0VhrnSSJ&wd=&eqid=9dea342a00000a8400000006603cb8f7)。
+-   [HDL & FPGA 学习和规范（HDL-&-FPGA- study）](https://github.com/Staok/HDL-FPGA-study-and-norms) 就是本文。
+
+FPGA 的 时序分析 和 时序约束 的资料参考：
+
+- [FPGA 高级设计：时序分析和收敛](https://zhuanlan.zhihu.com/p/345848164)。
+- [小梅哥概述时序约束和分析相关知识](https://www.bilibili.com/video/BV1ZE411f78z) 视频。
+- [小梅哥FPGA时序分析和约束实例演练课程](https://www.bilibili.com/video/BV1NE411h7qP) 视频。
+- [基于TimeQuest Timing Analyzer的时序分析笔记（一） - 程序员大本营 (pianshen.com)](https://www.pianshen.com/article/87231741320/) 网络系列文章。
+- 《深入浅出玩转FPGA第三版》 时序分析章节 书。
+- 《通向FPGA之路---七天玩转Altera之时序篇V1.0》书。
+
+学习路线总结文章：
+
+- [如何学习FPGA，FPGA学习教程学习经验 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/406835323)。
+- [FPGA简介 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/401954780)。
+- [Verilog知识大全 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/444188673)。
+- etc
+
 ## 1 HDL & FPGA 值得注意的
 
 ### Altera FPGA 基本要素
@@ -102,7 +133,7 @@
 
 -   No.1，层次化设计，IP化设计。自写小IP尽量参数化、可重用，方便日后搭建数字积木。
 -   顶层文件名与顶层模块名一致。
--   模块的定义名加尾缀"_ module"，输入输出的信号名各加后缀"_ in"和"_ out"，低电平有效的信号加尾缀"_ n"，时钟信号使用"clk _"或"Clk _"前缀，复位信号使用"rst _"前缀，使能信号使用"en"或者"Enable"标识等。
+-   模块的定义名加尾缀"_ module"，输入输出的信号名各加后缀"_ in"和"_ out"，低电平有效的信号加尾缀"_ n"或“#”，时钟信号使用"clk _"或"Clk _"前缀，复位信号使用"rst _"前缀，使能信号使用"en"或者"Enable"标识等。
 -   定义模块的时候，定义输入输出信号时就带好 "input"/“in” 、 "output"/“out” 和 "reg" 等的标识修饰。
 -   一个 tab 四个空格。
 -   用 tab 划分清晰的语句层次，用 tab 对齐多排赋值操作等。
@@ -356,7 +387,7 @@
   	一个参数化模块设计例子
   	定义：
   module Sdram_Write
-  #(  parameter   DATA_WIDTH  =   16,		注，#() 这个部分用于模块参数化配置，但不可综合
+  #(  parameter   DATA_WIDTH  =   16,		注，#() 这个部分用于模块参数化配置，对于 verilog 不可综合
       parameter   ADDR_WIDTH  =   12,
       parameter   ROW_DEPTH   =   2,
       parameter   COL_DEPTH   =   256,
@@ -1016,6 +1047,11 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 
 ------
 
+## 1.5 开源 FPGA 板
+
+- [Terasic - DE 系列母板](http://www.terasic.com.cn/cgi-bin/page/archive.pl?Language=China&CategoryNo=178)，terasIC 开源其开发板的原理图和例程，作为参考设计很不错。
+- [STEP FPGA开源社区\]](https://www.stepfpga.com/doc/fpga_start)，目前开源好几款FPGA开发板和各种参考案例、教程，比较丰富。
+
 ## 2 模块收集（不定期更新）
 
 *p.s 以下为列举日常项目中用到的可以开源的部分模块源码（Verilog or VHDL）或者实现思想（就是留个坑，但还没写）。*
@@ -1032,7 +1068,7 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 
 -   [Analog Devices, Inc](https://github.com/analogdevicesinc)。
 
--   [OpenCores](https://opencores.org/)。
+-   [OpenCores](https://opencores.org/)。在这个网站上可以看到各种经过工程师验证过的内核，比如8051、OpenRisc、AVR、MIPS32等。
 
 -   [李锐博恩 Verilog编程实例](https://www.zhihu.com/column/c_1251279662770712576)。
 
@@ -1100,56 +1136,9 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 
 《硬件架构的艺术：数字电路的设计方法与技术》，该书的译者序：“...实用且有效...作者系统打造出一栋由实用技术组成的大厦......一切从解决问题出发，解释怎么做，并给出原理图和代码，以及解决方案......本书主要内容涉及**时钟和复位、多时钟域设计、时钟分频器、低功耗设计技术、流水线技术、字写顺序、消抖技术和电磁兼容性等内容**”。该书针对以上方面给出了很多设计策略和实用方法，或者说对很多模块的设计给出了推荐的 HDL 和电路，适合当作工具书手办阅读。该书罗列了很多应该避免的有隐患的（甚至仿真的时候不容易发现而实际运行时候容易出问题的种种情况）综合后的数字逻辑电路，并由此给出了很多应该避免的 HDL 写法，以及查看综合后电路是否有已知的隐患；并也给出了推荐的数字电路形式。该书在网上容易下载到电子版。
 
-
-
 ------
 
-## 3 时序分析和约束
-
-参考源：
-
--   [FPGA 高级设计：时序分析和收敛](https://zhuanlan.zhihu.com/p/345848164)。
--   [小梅哥概述时序约束和分析相关知识](https://www.bilibili.com/video/BV1ZE411f78z) 视频。
--   [小梅哥FPGA时序分析和约束实例演练课程](https://www.bilibili.com/video/BV1NE411h7qP) 视频。
--   [基于TimeQuest Timing Analyzer的时序分析笔记（一） - 程序员大本营 (pianshen.com)](https://www.pianshen.com/article/87231741320/) 网络系列文章。
--   《深入浅出玩转FPGA第三版》 时序分析章节 书。
--   《通向FPGA之路---七天玩转Altera之时序篇V1.0》书。
-
-
-
-------
-
-## 4 值得跟着的学习网站
-
--   SOC FPGA 和 FPGA 等各种开发板开源资料（网上可以找到全套资料）：如 正点原子、野火、黑金、Allegro等开发板（考验资料搜集能力的时候到了）。
--   [小梅哥 B站视频（Verilog & FPGA基础，SOPC，SOC以及其他常用协议](https://space.bilibili.com/476579378) 缺点：视频太~长了。
--   [LeiWang1999/FPGA: 帮助大家进行FPGA的入门，分享FPGA相关的优秀文章，优秀项目 (github.com)](https://github.com/LeiWang1999/FPGA) 记录比较全面
-
-文档形式的教程：
-
--   [Quartus II的奇幻漂流V1.0——手把手教你使用Quartus II](http://blog.sina.com.cn/s/blog_bff0927b0102v0u3.html)
--   [Nios II的奇幻漂流V2.0——基于Qsys的Nios II设计教程](http://blog.sina.com.cn/s/blog_bff0927b0102uzmh.html)
--   [Nios II入门实验](https://www.cnblogs.com/yuphone/category/276816.html)
--   [小梅哥 FPGA资料专区](http://www.corecourse.cn/forum.php?mod=forumdisplay&fid=41)
--   [小梅哥 - 博客园](https://www.baidu.com/link?url=CYD8ZBPmHJP4lnc7VKOm_uIU55a5sTGQWKyKYCixBTbitt-DLiyDpbSK0VhrnSSJ&wd=&eqid=9dea342a00000a8400000006603cb8f7)
--   [HDL & FPGA 学习和规范（HDL-&-FPGA- study）](https://github.com/Staok/HDL-FPGA-study-and-norms)
-
-FPGA的时序分析和时序约束的资料参考：
-
-- [FPGA 高级设计：时序分析和收敛](https://zhuanlan.zhihu.com/p/345848164)
-- [小梅哥概述时序约束和分析相关知识](https://www.bilibili.com/video/BV1ZE411f78z)
-- [小梅哥FPGA时序分析和约束实例演练课程](https://www.bilibili.com/video/BV1NE411h7qP)
-- 《深入浅出玩转FPGA第三版》 时序分析章节
-- 《通向FPGA之路---七天玩转Altera之时序篇V1.0》
-
-学习路线总结文章：
-
-- [如何学习FPGA，FPGA学习教程学习经验 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/406835323)
-- 
-
-------
-
-## 5 参考
+## 3 参考
 
 *p.s 本文一部分来自自己总结的经验，一部分来自参考。参考不是照搬，是选择我认为的精髓，每个人不同，所以推荐看一下这些参考，TA们都提供了很好的技巧。当然也许还有很多更好的资料，可以留言推荐。*
 
@@ -1160,6 +1149,6 @@ FPGA的时序分析和时序约束的资料参考：
 -   [Verilog设计的原则和技巧和IP核的使用](https://blog.csdn.net/dengshuai_super/article/details/52528407)。
 -   《基于FPGA的嵌入式开发与应用（徐光辉 程东旭 等编著）》。
 -   还可以参考但还没看的：
-    - 《FPGA设计-实战演练（高级技巧篇）》王敏志
+    - 《FPGA设计-实战演练（高级技巧篇）》王敏志。
     - ...
 -   ...
