@@ -53,7 +53,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 - [Verilog知识大全 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/444188673)。
 - etc
 
-## 1.5 开源 & 学习 FPGA 开发板
+## 0.25 开源 & 学习 FPGA 开发板
 
 以下 FPGA 开发板提供了完善的 软硬件资料，参考意义极大。
 
@@ -63,6 +63,10 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 - [Xilinx FPGA板卡 - 米尔科技 (myir-tech.com)](http://www.myir-tech.com/product/index.asp?anclassid=90)。
 - [Terasic - DE 系列母板](http://www.terasic.com.cn/cgi-bin/page/archive.pl?Language=China&CategoryNo=178)，terasIC 开源其开发板的原理图和例程，作为参考设计很不错。
 - [STEP FPGA开源社区\]](https://www.stepfpga.com/doc/fpga_start)，目前开源好几款FPGA开发板和各种参考案例、教程，比较丰富。
+
+## 0.75 FPGA 相关好文杂文存放
+
+- [如何从零开始将神经网络移植到FPGA(ZYNQ7020)加速_Jarvis码员的博客-CSDN博客_将神经网络部署到fpga上](https://blog.csdn.net/u012116328/article/details/117246023)。
 
 ## 1 HDL & FPGA 值得注意的
 
@@ -589,6 +593,11 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 - 把乒乓操作模块当做一个整体，站在这个模块的两端看数据，输入数据流和输出数据流都是连续不断的，没有任何停顿，因此非常适合对数据流进行流水线式处理。
 - 所以乒乓操作常常与流水线结合使用，完成数据的无缝缓冲与处理。
 
+**乒乓缓存的实施**
+
+1. 两个单口 RAM 方式。设计一个 MUX 模块，输入为一个类似 SRAM 接口，其后面控制两个单口 RAM（外部 SRAM 芯片 或 FPGA 内建 RAM），输出一个 类似 SRAM 接口芯片和 通知可读的信号（通知后面，一个 RAM 块已经写满可以快速读出）。
+2. 一个双口 RAM 方式。设计一个 MUX 模块，输入接口同上，其 后面控制 一个 双口 RAM（外部芯片或 FPGA 内建），MUX 模块的输入数据就不断循环 从地址 0 到最大地址 存进该 RAM，当存到一半的时候 输出一个 通知可读信号，即当 前半部分 存满后 可以读前半部分（此时 MUX模块正在后半部分存），当后半部分存满后可以读后半部分（此时 MUX模块又回到前半部分地址开始存），这样 一个 双口 RAM 的前后两半作为两块 RAM 进行乒乓操作。
+
 #### 工程搭建、仿真与时钟约束
 
 ##### 一点技巧
@@ -1046,7 +1055,7 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 
 ![主端口 可变等待周期 的写传输](assets/主端口-可变等待周期-的写传输.png)
 
-### 其它 Avalon 传输
+### 其它 Avalon 传输模式
 
 这里略。
 

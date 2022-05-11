@@ -1,0 +1,144 @@
+1
+00:00:00,380 --> 00:00:01,189
+HI, Greeting to you.
+
+2
+00:00:01,569 --> 00:00:03,480
+I’m Kee Chiew from Intel PSG IP Application Team.
+
+3
+00:00:05,049 --> 00:00:06,459
+Today, I would like to show how to run PCIe AVMM DMA reference design in Arria 10 device.
+
+4
+00:00:11,509 --> 00:00:17,299
+At the end of this video, you will be able to execute the provided Linux driver and Windows
+
+5
+00:00:17,300 --> 00:00:19,320
+driver to perform DMA transfer.
+
+6
+00:00:20,399 --> 00:00:25,738
+In this video, I will run the design in two different operating system which is CentOS
+
+7
+00:00:25,739 --> 00:00:29,560
+6.8 in first demo and Windows 7 in second demo.
+
+8
+00:00:29,559 --> 00:00:36,589
+I’m using Quartus Prime software version 16.0.2 and Arria 10 GX FPGA Development kit
+
+9
+00:00:36,590 --> 00:00:37,960
+as example.
+
+10
+00:00:37,960 --> 00:00:43,679
+Notes that, similar method is applicable to all V-series devices including Arria V, Cyclone
+
+11
+00:00:43,679 --> 00:00:45,989
+V and Stratix V.
+
+12
+00:00:45,990 --> 00:00:51,900
+This is the link to download the reference design and also the driver for DMA application.
+
+13
+00:00:53,359 --> 00:00:58,498
+Firstly, download the PCIe A10 AVMM DMA reference design.
+
+14
+00:00:58,509 --> 00:01:03,238
+I will use the gen3x8 design inside the zip files to facilitate the demo.
+
+15
+00:01:03,238 --> 00:01:08,728
+For Linux user, please download the linux driver to your Linux machine.
+
+16
+00:01:08,728 --> 00:01:13,599
+Similar to Windows user, here is the link to download the 64-bit Windows driver.
+
+17
+00:01:15,459 --> 00:01:32,338
+Open the archive design by using Quartus, open up the qsys design file.
+
+18
+00:01:46,620 --> 00:01:54,360
+This design consist of PCIe AVMM DMA IP core, on chip memory and clock.
+
+19
+00:01:54,368 --> 00:01:59,768
+Please take notes that transceiver PLL and DMA descriptor controller is generated inside
+
+20
+00:01:59,769 --> 00:02:03,019
+the PCI AVMM DMA IP core.
+
+21
+00:02:03,019 --> 00:02:08,719
+The drivers will access to DMA descriptor controller through these base address.
+
+22
+00:02:09,680 --> 00:02:15,399
+The On chip memory, memory size is set more than 64kB in order to support the maximum
+
+23
+00:02:15,409 --> 00:02:22,718
+capability of DMA controller in the IP core (which is 64kB of transfer size) for 256-bit
+
+24
+00:02:22,719 --> 00:02:23,719
+interface.
+
+25
+00:02:23,719 --> 00:02:30,159
+Currently, the maximum DMA transfer size for 128-bits is only 8kB.
+
+26
+00:02:30,159 --> 00:02:34,498
+However, it will increase in the future version of the Quartus Prime software.
+
+27
+00:02:35,620 --> 00:02:40,320
+This is the design that I’m going to demo in Linux and Windows machine.
+
+28
+00:02:41,960 --> 00:02:46,759
+This is the hardware setup for Arria 10 AVMM DMA reference design.
+
+29
+00:02:46,759 --> 00:02:51,999
+On the left is a desktop PC for reference design demo, and on the right is a laptop
+
+30
+00:02:52,000 --> 00:02:54,180
+with Quartus II software installed.
+
+31
+00:02:56,680 --> 00:03:00,920
+The Arria 10 PCIe development kit is slot into PCIe slot in the motherboard.
+
+32
+00:03:00,919 --> 00:03:07,859
+Please make sure your PCIe slot in the motherboard is able to support up to gen3x8.
+
+33
+00:03:07,860 --> 00:03:14,180
+In order to get FPGA ready before the PC enumeration happened, we need to power up the development
+
+34
+00:03:14,180 --> 00:03:19,340
+kit and program the by using the laptop before the desktop PC is power on.
+
+35
+00:03:21,460 --> 00:03:24,020
+Let’s start to program the FPGA now.
+
+36
+00:03:42,259 --> 00:03:44,578
+After that, power on the desktop PC.
+
