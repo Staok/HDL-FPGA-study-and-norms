@@ -1,4 +1,4 @@
-# HDL & FPGA 学习和规范（HDL-&-FPGA- study）
+# HDL & FPGA 学习、规范和技巧（HDL-&-FPGA- study）
 
 <p align="center">
     <img src="assets/CC-BY-NC-SA-4.0-88x31.png" alt="CC BY-NC-SA 4.0 88x31"  />
@@ -10,9 +10,11 @@
 
 本文件是“瞰百易”计划的一部分，尽量遵循[“二项玻”定则](https://github.com/Staok/Please-stay-in-the-future)，~~致力于与网络上碎片化严重的现象泾渭分明！~~
 
-本文系广泛撷取、借鉴和整理，适合刚入门的人阅读和遵守，已经有较多经验的人看一看图个乐，如有错误恭谢指出！
+本文系广泛撷取、借鉴和整理，适合刚入门的人阅读和遵守，已经有较多经验的人看一看图个乐，如有错误恭谢指出！本文已经是长期积累和堆叠而形成一定规模，不必按照从前到后的顺序去看，可以挑感兴趣的章节去看。
 
 本文为简述风格，本意即记录要点和便于快速拾起。
+
+本文对应的 [Github](https://github.com/Staok/HDL-FPGA-study-and-norms)/[Gitee](https://gitee.com/staok/HDL-FPGA-study-and-norms) 仓库地址，本文最新的原文 和 一些源码、备查手册等等 均放在里面。
 
 ------
 
@@ -30,6 +32,7 @@
 
 文档形式的教程：
 
+-   [Verilog 教程 | 菜鸟教程 (runoob.com)](https://www.runoob.com/w3cnote/verilog-tutorial.html)。
 -   [Quartus II的奇幻漂流V1.0——手把手教你使用Quartus II](http://blog.sina.com.cn/s/blog_bff0927b0102v0u3.html) 推荐。
 -   [Nios II的奇幻漂流V2.0——基于Qsys的Nios II设计教程](http://blog.sina.com.cn/s/blog_bff0927b0102uzmh.html) 推荐。
 -   [Nios II入门实验](https://www.cnblogs.com/yuphone/category/276816.html)。
@@ -72,20 +75,20 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 
 ### Altera FPGA 基本要素
 
-*p.s 过于基础的概念不提，这不是入门帖。入门可以跳到 “4 值得跟着的学习网站” 章节进行摄入。*
+*p.s 过于基础的概念不提，这不是入门帖。入门可以跳到 “O.0 值得跟着的学习网站” 章节进行摄入。*
 
 *p.s 以下以 Cyclone IV E 系列 FPGA 为例。*
 
--   FPGA基础资源选择：逻辑单元（LE）数量，内嵌存储器（M9K）数量（总RAM Bits数），乘法器数量，PLL数量，I/O数量，全局时钟网络数量等。
+-   FPGA基础资源选择：逻辑单元（LE）数量，内嵌存储器（M9K）数量（总 RAM Bits 数），乘法器数量，PLL 数量，I/O 数量，全局时钟网络数量等。
 
--   板级电路组成：电源，时钟，复位，JTAG，固化配置信息FLASH，外设。具体连接形式参考一些开发板和开源板子的原理图和PCB。
+-   板级电路组成：电源，时钟，复位，JTAG，固化配置信息 FLASH，外设。具体连接形式参考一些开发板和开源板子的原理图和 PCB。
 
-    -   电源：核心电源（标识 VCCINT，低压版本 1.0V，非低压 1.2V），IO BANK（标识 VCCIOx（x = 1到8），电压 1.2V到3.3V），PLL（模拟PLL标识 VCCAx（x = 1、2或4），其地标识 GNDAx（x同前），电压 2.5V；数字PLL标识 VCCD_PLLx（x = 1、2或4），电压1.2V），外设供电。不同系列 FPGA 的供电措施不同，具体要看电器参数等手册，尽量使用推荐值。
-    -   复位：上电后，FPGA器件开始加载外部FLASH芯片的固化信息，加载完毕之后（最多0.3s）再进行复位（低电平有效），阻容RC复位电路可选：R=47kΩ，C=10uF，3.3V的IO标准下，充电到1.7V时间为340ms。
+    -   电源：核心电源（标识 VCCINT，低压版本 1.0V，非低压 1.2V），IO BANK（标识 VCCIOx（x = 1 到 8），电压 1.2V 到 3.3V），PLL（模拟 PLL 标识 VCCAx（x = 1、2 或 4），其地标识 GNDAx（x 同前），电压 2.5V；数字 PLL 标识 VCCD_PLLx（x = 1、2 或 4），电压 1.2V），外设供电。不同系列 FPGA 的供电措施不同，具体要看电器参数等手册，尽量使用推荐值。
+    -   复位：上电后，FPGA 器件开始加载外部 FLASH 芯片的固化信息，加载完毕之后（最多 0.3s）再进行复位（低电平有效），阻容 RC 复位电路可选：R = 47kΩ，C = 10uF，3.3V 的 IO 标准下，充电到 1.7V 时间为 340ms。
 
--   全局时钟网络：专用时钟网络走线，同一时钟到达不同寄存器的时间差可以被控制到很小的范围内。外部输入时钟信号要连接到“全局时钟专用引脚”上。FPGA的综合工具会自动识别和分配。
+-   全局时钟网络：专用时钟网络走线，同一时钟到达不同寄存器的时间差可以被控制到很小的范围内。外部输入时钟信号要连接到 “全局时钟专用引脚” 上。FPGA 的综合工具会自动识别和分配。
 
--   I/O：输入和输出时钟信号尽量分配到专用引脚上。差分信号对儿必须分配到支持差分的专用引脚上。高速信号分配到支持高速传输的专用引脚上（如DDR的专用IO接口）。一些硬核使用的引脚可能是固定的要注意。总线信号尽量分配到同一个BANK。一些产生噪声干扰的信号（如时钟信号）尽量远离器件的配置喜欢和其它敏感的信号。
+-   I/O：输入和输出时钟信号尽量分配到专用引脚上。差分信号对儿必须分配到支持差分的专用引脚上。高速信号分配到支持高速传输的专用引脚上（如 DDR 的专用 IO 接口）。一些硬核使用的引脚可能是固定的要注意。总线信号尽量分配到同一个 BANK。一些产生噪声干扰的信号（如时钟信号）尽量远离器件的配置喜欢和其它敏感的信号。
 
 - 调试和固化：
 
@@ -96,17 +99,17 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
   -   [Altera特殊管脚的使用](https://blog.csdn.net/xhnmn/article/details/85017131)。
   -   官方手册里是最全的、最准的，多看！
   
-  具体看官网手册“Cyclone IV Device Handbook Volume 1”的“Configuration Process”章节和“Configuring Altera FPGAs.pdf”手册。
+  具体看官网手册 “Cyclone IV Device Handbook Volume 1” 的 “Configuration Process” 章节和 “Configuring Altera FPGAs.pdf” 手册。
   
-  -   调试为通过 JTAG 接口用 Blaster 下载器把编译生成的.sof文件下载到FPGA内掉电易失的SRAM中。
+  -   调试为通过 JTAG 接口用 Blaster 下载器把编译生成的 .sof 文件下载到 FPGA 内掉电易失的 SRAM 中。
   
-  -   固化是通过 JTAG 接口用 Blaster 下载器把编译并转化生成的.jic文件下载到FPGA对于的外部FLASH器件中。FPGA上电从FLASH中获取配置信息，分为几种不同的配置模式，根据 [3:0]MSEL 四个引脚上电时的电平状态确定，而具体的 [3:0]MSEL 与 启动方式的关系 看对应FPGA芯片系列型号的手册。配置模式分为以下几种：
+  -   固化是通过 JTAG 接口用 Blaster 下载器把编译并转化生成的 .jic 文件下载到 FPGA 对于的外部 FLASH 器件中。FPGA 上电从 FLASH 中获取配置信息，分为几种不同的配置模式，根据 [3:0]MSEL 四个引脚上电时的电平状态确定，而具体的 [3:0]MSEL 与 启动方式的关系 看对应 FPGA 芯片系列型号的手册。配置模式分为以下几种：
   
-      AS（主动串行），适用于小容量。由FPGA器件引导配置过程，EPCS系列FLASH专供AS模式。一般用此模式。
+      AS（主动串行），适用于小容量。由 FPGA 器件引导配置过程，EPCS 系列 FLASH 专供 AS 模式。一般用此模式。
   
-      AP（主动并行），速度快，占I/O更多，适用于大容量FPGA器件。EPC系列FLASH用于此。
+      AP（主动并行），速度快，占 I/O 更多，适用于大容量 FPGA 器件。EPC 系列 FLASH 用于此。
   
-      PS（被动串行），需要外部MCU或CPLD（如MAX II系列）控制FLASH的数据打入FPGA，此方式最灵活，对于多个FPGA或者要自动更换固件用此模式。
+      PS（被动串行），需要外部 MCU 或 CPLD（如 MAX II 系列）控制 FLASH 的数据打入 FPGA，此方式最灵活，对于多个 FPGA 或者要自动更换固件用此模式。
   
       ![被动串行配置方式（PS）详解](assets/被动串行配置方式（PS）详解.jpg)
   
@@ -114,15 +117,15 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 
 ### FPGA 开发流程和适用范围
 
-- 开发流程：需求分析，模块划分，实现，前仿真，分配 IO，时钟信号约束 + 其他信号时序分析和约束，后仿真，下载验证和调试，固化代码（注意是有顺序的）。
+- 开发流程：需求分析，模块划分，实现，前仿真，分配 IO，时钟信号约束 + 其他信号时序分析和约束，后仿真，下载验证和调试，固化代码（注意是有顺序的）。[1.4 Verilog 设计方法 | 菜鸟教程 (runoob.com)](https://www.runoob.com/w3cnote/verilog-design-method.html)。
 
   <img src="assets/fpga开发流程图.jpg" alt="fpga开发流程图" style="zoom:;" />
 
--   FPGA固有灵活性和并行性。FPGA应用领域列举：逻辑粘合，实时控制，高速信号采集和处理，协议实现，仿真验证系统，片上系统SoC。
+-   FPGA 固有灵活性和并行性。FPGA 应用领域列举：逻辑粘合，实时控制，高速信号采集和处理，协议实现，仿真验证系统，片上系统 SoC。
 
--   处理器和FPGA分工：MCU、MPU适合做管理、协调，FPGA的数字逻辑适合做专用的、复杂的、结构和功能固定下来的算法实现。
+-   处理器和 FPGA 分工：MCU、MPU 适合做管理、协调，FPGA 的数字逻辑适合做专用的、复杂的、结构和功能固定下来的算法实现。
 
--   推荐多去读读FPGA原厂（Altera 或 Xilinx）的官方文档，在它们的一些文档手册中有各种常见的电路的参考实现实例和代码风格。
+-   推荐多去读读 FPGA 原厂（Altera 或 Xilinx）的官方文档，在它们的一些文档手册中有各种常见的电路的参考实现实例和代码风格。
 
 -   板级PCB走线遵循“[PCB走线规范](https://github.com/Staok/thoughs-about-hardware-design)”。
 
@@ -130,7 +133,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 
 ### 设计和实施规范
 
-这里的规范仅为初级，另有“HuaWei Verilog 规范”等规范可供参考。
+这里的规范仅为初级，另有 “HuaWei Verilog 规范” 等规范可供参考。
 
 #### 顶层设计的要点
 
@@ -146,17 +149,15 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 
 ##### 语法规范
 
--   No.1，层次化设计，IP化设计。自写小IP尽量参数化、可重用，方便日后搭建数字积木。
+-   No.1，层次化设计，IP 化设计。自写小 IP 尽量参数化、可重用，方便日后搭建数字积木。
 -   顶层文件名与顶层模块名一致。
 -   模块的定义名加尾缀"_ module"，输入输出的信号名各加后缀"_ in"和"_ out"，低电平有效的信号加尾缀"_ n"或“#”，时钟信号使用"clk _"或"Clk _"前缀，复位信号使用"rst _"前缀，使能信号使用"en"或者"Enable"标识等。
 -   定义模块的时候，定义输入输出信号时就带好 "input"/“in” 、 "output"/“out” 和 "reg" 等的标识修饰。
 -   一个 tab 四个空格。
--   用 tab 划分清晰的语句层次，用 tab 对齐多排赋值操作等。
+-   用 tab 划分清晰的语句层次，用 tab 对齐多行同层次语句等。
 -   begin 和 end 语句块修饰词在竖方向对齐。
 -   操作符等前后用一个空格做间隔。
 -   注释齐全，对自己和别人负责。
-
-[Verilog 教程 | 菜鸟教程 (runoob.com)](https://www.runoob.com/w3cnote/verilog-tutorial.html)。
 
 - 以下用一例子包含 verilog 常用语法。
 
@@ -193,10 +194,10 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
       1.wire可以在Verilog中表示任意宽度的单线/总线
       2.wire可以用于模块的输入和输出端口以及一些其他元素并在实际模块声明中
       3.wire不能存储值（无状态），并且不能在always @ 块内赋值（=或<=）左侧使用。
-      4.wire是assign语句左侧唯一的合法类型
+      4.wire是assign语句左侧唯一的合法类型（assign 后面跟着的必须是一个 wire 类型）
       5.wire只能用于组合逻辑
    reg 用法总结
-      1. 类似于电线，但可以存储信息（有内存，有状态）允许连接到模块的输入端口，但不能连接到实例化的输出
+      1. 声明寄存器，可以存储信息（有内存，有状态）允许连接到模块的输入端口，但不能连接到一个模块的实例化的输出
       2. 在模块声明中，reg可以用作输出，但不能用作输入
       3. 在always@(......)语句块内，= 或者 <= 赋值语句的左边必须是是reg变量
       在initial语句块内，= 赋值语句的左边必须是是reg变量
@@ -213,7 +214,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
   	数据类型：
   	5'o37		5 位八进制数，二进制为 11111
   	10'o37		右对齐，高位补 0
-  	10'bx0x1 	左边补 x，完整即 x x x x x x x 0 x 1，x 为表未知状态
+  	10'bx0x1 	左边补 x，完整即 x x x x x x x 0 x 1，x 表示未知状态
   	4'b1x_01	4 位二进制数，为 1 x 0 1，下划线方便阅读
   	4'hz  		4 位z(扩展的z) , 即 zzzz，z 表高阻状态
   	parameter SEC_TIME = 48_000_000; 十进制数
@@ -229,6 +230,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
   	引用数组某个数的某个位
   	my_memory_1 = my_memory[1];
   	my_memory_1_bit0 = my_memory_1[0];
+  	    verilog 不支持 数组作为 模块的输入或输出，systemVerilog 支持
   	
   	运算;
   	算术运算符(+，-，x，/,%)
@@ -237,7 +239,8 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
       逻辑运算符(&&,||,!)
       条件运算符(?;)
       位运算符 (~,|,^,&,^~) 
-      	对于&运算用法之一：assign max_avl_address = &avl_address; 则 avl_address 最大（全1）的时候max_avl_address 为1，否则为0
+      	对于 & 运算用法之一：assign max_avl_address = &avl_address; 
+      	 则 avl_address 最大（全1）的时候 max_avl_address 为 1，否则为 0
       移位运算符(<<,>>)
       拼接运算符({})
   */
@@ -256,7 +259,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
   */
   
   /*
-   for 语句，要使用计数器+case语句替代
+   for 语句，尽量不要用，要使用 计数器 + case 语句 来替代
    https://blog.csdn.net/messi_cyc/article/details/79098444
   */
   
@@ -265,6 +268,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
    https://blog.csdn.net/bleauchat/article/details/85322247
   */
   
+  /* 模块注释规范 */
   /**
     *******************************************************************************************************
     * File Name    : xxx.v
@@ -321,12 +325,12 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
       /* tri 主要用于定义三态的线网 */
       
   );
-      /* 常量参数 */
+      /* 定义常量参数 */
       parameter  bit_7 = 7,bit_8 = 8;
       
       /* 三目运算例子 
       	wire [2:0] Student = Marks > 18 ? Grade_A : Grade_C;
-      	assign LR = (LR_select[1] == 1'b1) ? 1'bx : LR_select[0];
+      	assign LR = (LR_select[1] == 1'b1) ? 1'bz : LR_select[0];
       */
      
       /* 时序逻辑定义，对 q 左移位输出*/
@@ -339,7 +343,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
                   end
               else
                   begin
-                      q_out <= { q_out[6:0] , q_out[bit_7] }; /* 位拼接 */
+                      q_out <= { q_out[6:0] , q_out[bit_7] }; /* 使用位拼接，左移位 */
                   end
           end
       
@@ -352,16 +356,16 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
                   end
               else
                   begin
-                      p_out <= { p_out[0] , p_out[7:1] };
+                      p_out <= { p_out[0] , p_out[7:1] }; /* 使用位拼接，右移位 */
                   end
           end
       
-      /* 模块例化，建立连接 */
+      /* 在模块里面调用模块，即 FA_struct 模块例化，并建立连接 */
       FA_struct FA1(
-           .A (q_out[1]),
-           .B (p_out[1]),
+          .A (q_out[1]),
+          .B (p_out[1]),
   		.C (rst_n_in),
-  		.output_1(),	/* 该引脚悬空，如果是模块的输入则变为高阻，如果是输出则弃用 */ 
+          .output_1(),	/* 该引脚悬空，如果是 example_module 模块的输入则变为高阻，如果是输出则弃用 */ 
   		.output_2(output_2)
        );
   	
@@ -424,7 +428,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
       output              [DATA_WIDTH - 1:0]  wr_data,
       //wfifo
       output                       wfifo_rd_en,
-      input              [7:0]    wfifo_rd_data
+      input               [7:0]    wfifo_rd_data
   );
   	例化：
   Sdram_Write
@@ -457,14 +461,14 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 
 ##### 编写规范
 
--   以时钟信号同步的时序逻辑编写时尽量只用非阻塞赋值"<="（同步执行），用阻塞赋值"="（顺序执行）可能会产生bug，后者一般用于组合逻辑设计。尽量避免使用异步信号（比如异步复位等），即慎用或少用 assign 语句连接逻辑，而尽量把所有逻辑在 always @(*) begin ... end 中实现；如果传入一个异步信号，尽量加寄存器（D触发器）用时钟进行锁存。
+-   以时钟信号同步的时序逻辑编写时尽量只用非阻塞赋值"<="（同步执行），用阻塞赋值"="（顺序执行）可能会产生bug，后者一般用于组合逻辑设计。尽量避免使用异步信号（比如异步总线等），即慎用或少用 assign 语句连接逻辑，而尽量把所有逻辑在 always @(*) begin ... end 中实现；如果传入一个异步信号，尽量加寄存器（D触发器）用时钟进行锁存。
 
 -   尽量大部分功能使用时序逻辑电路设计，使用行为语句 + 时序逻辑电路描述（“always@” + “<=”） 完成建模（对于 reg 类型变量）。对于组合逻辑电路描述，简单逻辑可以使用连续赋值语句（“assign” + “=”）（对于 wire 类型变量），对于复杂组合逻辑使用 “always@( 所有敏感信号 )” + “=” 的语句。
 
 -   Always 块的一般形式为：
 
     ```verilog
-    /* 功能描述 */
+    /* 这里加注释对该模块进行功能描述 */
     always @(negedge clk_in or negedge i2s_module_rst) /* 在时钟的边沿触发，再加一个复位触发条件 */
         begin
             if(!i2s_module_rst) /* 先判断是否复位 */
@@ -501,17 +505,17 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 
 -   逻辑表达式不要写的太长，可以简化逻辑（卡诺图法或者公式法，或者 multisim 里面的逻辑分析仪简化逻辑表达式）或者分多行去写，即不要让 RTL 图中某一段逻辑链过于长；长逻辑表达式用括号划分清关系减少歧义。
 
--   竞争与冒险的概念：逻辑电路中，由于门的输入信号经过不同的延时，到达门的时间不一致，这种情况叫竞争；由于竞争而导致输出产生毛刺（瞬时错误），这一现象叫冒险。为避免组合逻辑的输出出现“毛刺”，即冒险或竞争的发生，可以在输出加一个寄存器（D触发器），即让输出与时钟同步，当所有信号都到达寄存器（D 触发器）的输入后，时钟再“打一拍”才能输出，这样避免最后的输出有“毛刺”；避免锁存器，使用触发器。
+-   竞争与冒险的概念：逻辑电路中，由于门的输入信号经过不同的延时，到达门的时间不一致，这种情况叫竞争；由于竞争而导致输出产生毛刺（瞬时错误），这一现象叫冒险。为避免组合逻辑的输出出现“毛刺”，即冒险或竞争的发生，可以在输出加一个寄存器（D触发器），即让输出与时钟同步，当所有信号都到达寄存器（D 触发器）的输入后，时钟再“打一拍” 进行锁存 才能输出，这样避免最后的输出有“毛刺”；避免锁存器，使用触发器。
 
--   对于有选择和加法、比较等逻辑块，编写时应让信号先经过选择器，再送入乘法器、加法器或比较器等，即“先选后比，先选后加，先选后乘”。面积：乘法器 > 加法器 > 比较器 > 选择器。
+-   对于有 选择 和 加法、比较 等逻辑块，编写时应让信号先经过 选择器，再送入 乘法器、加法器 或 比较器 等，即“先选后比，先选后加，先选后乘”。逻辑电路面积大小对比：乘法器 > 加法器 > 比较器 > 选择器。
 
--   尽量不要用减法和除法（一个考虑多，一个面积大）；乘以常数直接用“*”，编译器会优化；两变量乘法用硬件乘法器IP。
+-   尽量不要用减法和除法（一个考虑多，一个面积大）；乘以常数直接用 “*”，编译器会优化；两变量乘法用硬件乘法器IP。
 
 -   使用 function 函数语句对复杂数值运算打包（它不能包含任何时间控制语句）；函数（function）可以调用其他函数（function）但不能调用任务（task），（function）函数由 任务（task）或其它 module 中调用。使用 task 语句写可重用的、固定下来的组合逻辑（不能有时序逻辑 always，不能有 wire 类型数据，这就是和 module 的区别；任务（task）可以调用其他任务（task）和函数（function），任务（task）只能在 module 中的语句块中被调用）。
 
 -   可以用 generate for 写 同结构不同参数 的 always@(*) 等代码，用 generate if/case 写一些随着需求可变的代码或 IP 核。 generate 语句属于预编译语句。
 
--   FGPA 的功耗与被使用的触发器或门电路的数量及其翻转次数成正比，尽量减少高速翻转的触发器数量是降低 FPGA 功耗的根本方法。
+-   FGPA 的功耗与被使用的触发器或门电路的数量及其翻转次数成正比，尽量减少高速翻转的触发器数量是降低 FPGA 功耗的根本方法之一。
 
 ##### 设计技巧
 
@@ -604,113 +608,120 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 
 -   安装 Quartus II 软件时候关闭杀毒软件。
 -   工程路径不能包含中文和空格！
--   自动补全代码的功能 ，在[Tools] -> [Options] -> [Text Editor] -> Autocomplete Text  里面选择启用。
+-   自动补全代码的功能 ，在 [Tools] -> [Options] -> [Text Editor] -> Autocomplete Text  里面选择启用。
 -   对于 Pin Planner，引脚的某一个属性可以复制，然后多选其他 I/O 对应属性的位置，再粘贴实现批量配置。
 -   针对硬件引脚固定的项目，先在 Pin Planner 写好所有引脚定义，然后导出，在 Pin Planner 界面里面点 左上角的 File 然后 Export 即可。以后在相同硬件平台创建新工程时可以直接导入这个引脚配置，在 Assignments 里面的 Import Assignments... 导入即可 。
 -   综合、布局布线后会生成“报告” ，里面一般会有 Warnings 和 Errors。这些报告信息会辅助你修改你设计中的 bug。
 -   三种优化模式（IDE 软件里可选）：针对速度的优化；针对面积的优化；针对功耗的优化。
 -   检查 Quartus II 软件对于未使用引脚的处理。步骤：打开 Device -> Device and Pin Options，新打开窗口中找到 Unused Pins，只能选两个比较安全的选项：As input tr-stated with week pull-up 或者 As input tri-stated。在 Dual-Purpose Pins 里面，可以设置所有的 配置相关的 PIN 为 Regular I/O。
+-   逻辑固化需要 sof 转 jic，然后将 jic 下载，教程 [ Intel（Altera）FPGA的SOF转JIC文件和下载详细教程_rui22的博客-CSDN博客_sof转jic](https://blog.csdn.net/rui22/article/details/105321338)。
 
 ##### ModelSim 仿真
 
 1. 确保 Quartus II 软件中 modelsim 的路径设置正确。步骤：Tools -> Options -> EDA Tool Options 里面，ModelSim-Altera 里面 设置正确路径 `[盘符]:\intelFPGA\18.0\modelsim_ase\win32aloem`。
-2. 先对工程做一次全编译。仿真文件 testbench 均由 IDE 软件产生（当引脚很多时节省手写时间）。步骤： Quartus II 软件里面 Processing->Start->Start Test Bench Template Writer，生成 .vt 格式的 testbench 文件后，修改这个文件名与里面顶层模块名一致。
+
+2. 先对工程做一次全编译。然后手动操作 IDE 软件产生 仿真文件 testbench（相比于手写 testbench，当引脚很多时节省手写时间）。步骤： Quartus II 软件里面 Processing->Start->Start Test Bench Template Writer，生成 .vt 格式的 testbench 文件后，修改这个文件名与里面顶层模块名一致，可以将文件扩展名改为 .v。
+
 3. 添加仿真文件到 Setting 里的 Simulation 里面（这一步新人可看教程），并设置 testbench 文件 为工程顶层文件。
+
 4. 然后按照下面的样式修改仿真文件。
 
-  一般仿真文件结构：
+   一般仿真文件结构：
 
-  ```verilog
-  `timescale 1 ns/ 100 ps /* 仿真时间单位和精度 */
-  
-  /* 设定时钟周期，这里为 20ns，即 50Mhz */
-  `define clock_period 20
-  
-  /* 仿真文件的顶层模块 */
-  module xxx_vlg_tst();
-  
-  // constants  
-  // general purpose registers
-  reg eachvec; /* 这个必须有。。。否则仿真不显示时序图 */
-  
-  // test vector input registers
-  /* 这里定义模块内各种 wire 和 net */
-  /* 把要仿真展示的信号的定义都放在这里 */
-  
-  // assign statements (if any)                          
-  /* 这里例化被仿真模块，例子：
-  pingPong_ram_module i1 (
-  // port map - connection between master ports and signals/registers   
-  	.rst_n_in(rst_n_in),
-  	
-  	.clk_w(clk_w),
-  	.data_w(data_w),
-  	
-  	.clk_r(clk_r),
-  	.addr_r(addr_r),
-  	.data_r(data_r),
-  	
-  	.read_valid(read_valid)
-  ); */
-  
-  /* 产生时钟 */
-  always #(`clock_period/2) clk_in = ~clk_in;
-  
-  initial
-      begin
-          $display("Running testbench");
-          
-          /* 在这里 复位/初始化 信号/寄存器 */
-          clk_in = 0; /* 时钟信号初始值 */
-          rst_n_in = 0;
-          
-          /* 或者用此产生激励源:
-          	forever #10 CLK_in = ~CLK_in;    重复运行语句直到仿真结束
-          	repeat(100) #5 CLK_in = ~CLK_in; 重复运行语句 100 次
-          */
-          
-          rst_n_in = 0; #100 rst_n_in = 1;	/* 复位信号*/
-          
-          #1000;
-          
-          rst_n_in = 0; #100 rst_n_in = 1;	/* 复位信号*/
-          
-          $display("Stop testbench");
-          $stop; /* 停止仿真 */
-      end
-  
-  always
-  	begin
-  		@eachvec; /* 这个必须有。。。 */
-  	end
-  endmodule
-  ```
+   ```verilog
+   `timescale 1 ns/ 100 ps /* 仿真时间单位和精度 */
+   
+   /* 设定时钟周期，这里为 20ns，即 50Mhz */
+   `define clock_period 20
+   
+   /* 仿真文件的顶层模块 */
+   module xxx_vlg_tst();
+   
+   // constants  
+   // general purpose registers
+   reg eachvec; /* 这个必须有。。。否则仿真不显示时序图 */
+   
+   // test vector input registers
+   /* 这里定义模块内各种 wire 和 net */
+   /* 把要仿真展示的信号的定义都放在这里 */
+   
+   // assign statements (if any)                          
+   /* 这里例化被仿真模块，例子：
+   pingPong_ram_module i1 (
+   // port map - connection between master ports and signals/registers   
+   	.rst_n_in(rst_n_in),
+   	
+   	.clk_w(clk_w),
+   	.data_w(data_w),
+   	
+   	.clk_r(clk_r),
+   	.addr_r(addr_r),
+   	.data_r(data_r),
+   	
+   	.read_valid(read_valid)
+   ); */
+   
+   /* 产生时钟 */
+   always #(`clock_period/2) clk_in = ~clk_in;
+   
+   initial
+       begin
+           $display("Running testbench");
+           
+           /* 在这里 复位/初始化 信号/寄存器 */
+           clk_in = 0; /* 时钟信号初始值 */
+           rst_n_in = 0;
+           
+           /* 或者用此产生激励源:
+           	forever #10 CLK_in = ~CLK_in;    重复运行语句直到仿真结束
+           	repeat(100) #5 CLK_in = ~CLK_in; 重复运行语句 100 次
+           */
+           
+           rst_n_in = 0; #100 rst_n_in = 1;	/* 复位信号*/
+           
+           #1000;
+           
+           rst_n_in = 0; #100 rst_n_in = 1;	/* 复位信号*/
+           
+           $display("Stop testbench");
+           $stop; /* 停止仿真 */
+       end
+   
+   always
+   	begin
+   		@eachvec; /* 这个必须有。。。 */
+   	end
+   endmodule
+   ```
 
-  打印调试信息：
+   打印调试信息：
 
-  ```verilog
-  $display("%d",value);   //与 printf 类似，但这个会自动换行
-  $wirte("%d\r\n",value);  //与 printf 一样
-  // %od,%oh ：以最少位输出，自适应
-  // $time 为执行到当前位置的以 `timescale 为单位的时间计数整数；
-  // $realtime 为以小数显示的执行到当前位置的以 timescale 为单位的时间。
-  ```
+   ```verilog
+   $display("%d",value);    // 与 printf 类似，但这个会自动换行
+   $wirte("%d\r\n",value);  // 与 printf 一样
+   // %od,%oh ：以最少位输出，自适应
+   // $time 为执行到当前位置的以 `timescale 为单位的时间计数整数；
+   // $realtime 为以小数显示的执行到当前位置的以 timescale 为单位的时间。
+   ```
 
-  注意：设计仿真文件 testbench 的激励源的时候，对于边沿触发的信号其激励源要设计带有沿变化，否则不会生效。
+   注意：设计仿真文件 testbench 的激励源的时候，对于边沿触发的信号其激励源要设计带有沿变化，否则不会生效。
 
-3. 然后把 仿真文件 设为 工程顶层文件，再点 `Analysis & Elaboration`（分析 仿真文件），编译没问题后可以开始仿真了，Tools -> Run Simulation Tool，里面有 RTL 级别仿真（前仿真）和 门级仿真（后仿真）。
-4. ModelSim 软件自动打开和仿真并结束后，右边可以查看信号逻辑时序图，通过 “+” 或 “-” 按钮进行放大和缩小视图，左边可以手动增减信号，增减信号后需要 重新开始仿真 来更新。
-5. 在 ModelSim 里面重新仿真，先点 `Restart`，再在菜单栏找到 `Run -All` 则重新仿真。
+5. 确保把 testbench 仿真文件 设为 工程顶层文件后，再点 `Analysis & Elaboration`（分析 仿真文件），编译没问题后可以开始仿真了，Tools -> Run Simulation Tool，里面有 RTL 级别仿真（前仿真）和 门级仿真（后仿真）。
+
+6. ModelSim 软件自动打开和仿真并结束后，右边可以查看信号逻辑时序图，通过 “+” 或 “-” 按钮进行放大和缩小视图，左边可以手动增减信号，增减信号后需要 重新开始仿真 来更新。
+
+7. 在 ModelSim 里面重新仿真，先点 `Restart`，再在菜单栏找到 `Run -All` 则重新仿真。
 
 ##### 时钟信号约束
 
 对于时钟信号的约束，必须要做，最基本要做的是使用 “TimeQuest timing Analyzer” 把设计内的所有时钟信号（包括晶振输入的时钟和 PLL 时钟）都约束一下。以下是具体步骤。
 
-关于其他输入、输出引脚的约束以及外接器件的 Timing 约束比较深奥（内容多，但不难理解），更多内容可详看 “3 时序分析和约束” 一节。
+关于其他输入、输出引脚的约束以及外接器件的 Timing 约束比较深奥（内容多，但不难理解），更多内容可详看 “O.0 值得跟着的学习网站” 一节 中的 “时序分析 和 时序约束” 部分。
 
+1. 先对 Quartus II 工程 进行 全编译 一遍。
 1. 打开 Timing Analyzer。
 2. 选择菜单栏 Netlist -> Create Timing Netlist，弹出对话框保持默认（保持选择 Post-fit），确认。
-3. 添加要约束的时钟，在标题栏选择 Constrains 里面选择 Creat Clock 打开对话框，Targets 选择 Quartus II 工程里面的 一个时钟信号，然后填入 Clock name（随意，可与 工程内时钟信号名保持一致），Period 为该时钟的周期，如实填写，上升下降时间都保持默认为 0 即可，再点 Run。关闭对话框。
+3. 添加要约束的时钟，在标题栏选择 Constrains 里面选择 Creat Clock 打开对话框，Targets 选择 Quartus II 工程里面的 一个时钟信号，然后填入 Clock name（随意，可与 工程内时钟信号名保持一致），Period 为该时钟的周期，如实填写，上升和下降的时刻 分别写上 0 和  Period 的一半即可，再点 Run。关闭对话框。
 4. 左边 Task 栏里面 依次双击 Update Timing Netlist 和 Write SDC File，第二个是保存 sdc 文件，选择一个合适的文件名和位置。然后可以关闭 Timing Analyzer。根据设置生成 sdc 约束文件，里面是约束的命令语句。
 5. 在 Quartus II 工程中添加自己生成的 sdc 文件，点击 Assignments -> Settings 里面的 Timing Analyzer，添加上面生成的 sdc 文件，关闭。可以看到 Quartus II 工程中 File 多了该 sdc 文件。然后对 Quartus II 工程 全编译。
 6. 再进入 Timing Analyzer，左边 Task 栏下面 先双击 Read SDC File，再找到左边 Task 栏下面 Macros 里面的 Report All Core Timing，双击打开，可以在右边栏看到 综合布线后各个信号线的传递裕量（Slack），为从小到大配列，该值为正的即可，越大越好。左边的其他栏目可以看到建立时间、保持时间的裕量等更多信息。
@@ -721,14 +732,14 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 
 SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部部分逻辑和 RAM 资源，进行存储，并通过 JTAG 发送到 PC 上的 SignalTap II 软件来观察时序图，其采样深度会受 FPGA 内部 RAM 限制，一般够用。
 
-1. 先不用修改 Verilog HDL 源文件。在 Quartus II 主界面选择菜单栏的 Tools->SignalTap II Logic Analyzer，打开 SigalTap II 软件，如下图所示（图源自正点原子的《开拓者FPGA 开发指南》），双击 节点列表和触发条件 栏 的空白区域来添加要监测的信号。首先将 Filer 设置为 SignalTap II：pre-synthesis（与 Verilog 设计中存在的信号最为贴近，方便寻找信号），再点击 List，完成信号添加点 OK 即可。
+1. 先不用修改 Verilog HDL 源文件。在 Quartus II 主界面选择菜单栏的 Tools->SignalTap II Logic Analyzer，打开 SigalTap II 软件，如下图所示（图源自正点原子的《开拓者FPGA 开发指南》），双击 节点列表和触发条件 栏 的空白区域来添加要监测的信号，在打开的窗口里面 首先将 Filer 设置为 SignalTap II：pre-synthesis（与 Verilog 设计中存在的信号最为贴近，方便寻找信号），再点击 List，完成信号添加点 OK 即可。添加进来的信号，在 Trigger Cond 一列 可以在某个信号上 右击 选择一种触发方式。
 
    <img src="assets/SignalTapII界面.png" alt="SignalTapII界面"  />
 
 3. 如果我们发现添加的信号变成了红色，或者有些 reg 与 wire 定义的信号可以观察，有些不可以，这是因为 reg 与 wire 被 Quartus 软件优化掉了，导致无法使用 SignalTap 观察。一种简便的方法是 对 这些信号添加 不要优化掉的注释来标记，如下所示，注意注释是加在 分号 前面。然后再在 SignalTap 软件里面添加试试。
 
    ```verilog
-   wire [23:0] counter/*synthesis keep*/; 
+   wire [23:0] counter/*synthesis keep*/;
    reg  [23:0] counter/*synthesis noprune*/;
    ```
 
@@ -744,14 +755,23 @@ SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部
 
 9. 节点列表和触发条件 栏的 下面 切换到 Data 页面，即可看到信号的采样的时序图，鼠标左键单击放大、右击缩小。信号的名字上右击 选择 Display Format 可以切换 显示 16 进制或 其它进制。
 
-10. 切换信号的触发方式，在 SignalTap 信号列表 Setup 一栏中，右击 信号的 Trigger Conditions 方框内的图标，其中：Don’t Care 表示不关心，即不设置触发方式；Low表示低电平触发；Falling Edge表示下降沿触发；Rising Edge表示上升沿触发；High表示高电平触发；Either Edge表示双沿触发，在此栏的最上边可以选择 这些信号的触发条件的 与或非 组合 来启动触发。然后再点 开始分析按钮 的 采样一次按钮，这是采样会等到 信号的 触发事件发生后再开始采集。因此触发可以给 外部按键信号 或 关键的信号 来触发开始采样。对于多位的寄存器可以设置某个 计数值 来触发采样。
+10. 切换信号的触发方式，在 SignalTap 信号列表 Setup 一栏中，右击 信号的 Trigger Conditions 方框内的图标，其中：Don’t Care 表示不关心，即不设置触发方式；Low 表示低电平触发；Falling Edge 表示下降沿触发；Rising Edge 表示上升沿触发；High 表示高电平触发；Either Edge 表示双沿触发，在此栏的最上边可以选择 这些信号的触发条件的 与或非 组合 来启动触发。然后再点 开始分析按钮 的 采样一次按钮，这是采样会等到 信号的 触发事件发生后再开始采集。因此触发可以给 外部按键信号 或 关键的信号 来触发开始采样。对于多位的寄存器可以设置某个 计数值 来触发采样。
 
 推荐教程：
 
 - [【原创FPGA教程】Quartus II的奇幻漂流V1.0——手把手教你使用Quartus II_VITO_ 铁掌北京漂 _新浪博客 (sina.com.cn)](http://blog.sina.com.cn/s/blog_bff0927b0102v0u3.html)，第 5 章 调试利器 SignalTap II 的使用，比较详细。
 - 正点原子 FPGA 开发板 配套教程书，开拓者FPGA 开发指南等 的 SignalTap II 软件的使用 章节，比较粗略。
 
-##### 记录 QII 的 IP 核使用
+#### 记录 QII 的 IP 核使用
+
+**官网文档查询**
+
+这里是最全、最准确的 原理和用法的详细介绍，用新外设好好看这里就能快速上手！
+
+- 《Introduction to Intel® FPGA IP Cores》以及 各个 IP 的手册。在官网可以下载到。
+- 本仓库的 `Quartus II + Nios II 的 IP核手册` 文件夹里面。本文对应的 [Github](https://github.com/Staok/HDL-FPGA-study-and-norms)/[Gitee](https://gitee.com/staok/HDL-FPGA-study-and-norms) 仓库地址，本文最新的原文 和 一些源码、备查手册等等 均放在里面。
+
+已经添加的 IP 核 是可以再编辑参数的，在 QII 软件左上角 的 Project Navigator 右边下拉框选择 IP components 里面可以看到所有添加的 IP，双击可以再编辑参数，若不能，则重新打开 QII 工程一下再试试。
 
 **NCO 正弦波合成**
 
@@ -778,43 +798,172 @@ SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部
   ```verilog
   pll pll_inst
   (
-      .areset ( !rst_n_in ),      //高电平输入复位 PLL
+      .areset ( !rst_n_in ),      /* 高电平输入复位 PLL，rst_n_in 可以是全局复位信号 */
       .inclk0 ( CLK_50M_in ),
-      .c0 ( pll_out_10k ),
-      .c1 ( pll_out_1M ),
-      .c2 ( pll_out_100M ),
-      .locked ( pll_out_locked )  //高电平输出表明 PLL 开始正常工作
+      .c0 ( pll_10k_out ),
+      .c1 ( pll_1M_out ),
+      .c2 ( pll_100M_out ),
+      .locked ( pll_locked_out )  /* 高电平输出表明 PLL 开始正常工作，
+      								pll_locked_out 可以是使用这个 PLL 时钟输出的模块的使能信号/复位信号等 */
   );
   ```
 
-**Qsys 中的 SDRAM 使用**
+#### Qsys/Nios II 相关
 
-[IP介绍和使用](https://blog.csdn.net/qq_43445577/article/details/107375619)，软核中的使用例程如下（默认16位数据位）。
+-   [NIOS II使用经验_shimmy_lee的博客-CSDN博客_nios](https://blog.csdn.net/shimmy_lee/article/details/54091068)。
+
+-   关于 SOPC，Nios II Eclipse 里面的 BSP 包里的 drives 文件夹里面的 _reg 后缀 的 .h 文件里面为自加的 Nios II 外设的可调用的 API。
+
+-   Nios II 默认禁止中断嵌套。
+
+-   关于 SOPC 中的 NIOS II 的 复位、异常向量 存放 （即程序存储 和 运行）位置 的几种方案：
+
+    1. 复位、异常都在 内建ram里；
+    2. 复位在 flash 里，异常在 内建ram里；
+    3. 复位在 flash 里，异常在 ddr（sdram 或 lpddr2 等 控制器 IP） 里。
+
+    
+    以上每一种情况都可以 下载到 ram 调试 和 进行固化（两种方法）。具体见下面 “程序调试” 和 “程序固化” 几段话。
+    
+-   关于 Nios II software build tool for eclipse 这个 IDE 的设置：
+
+    -   file->new->Nios II ...Template 从 .sopcinfo 文件获取信息新建 hello world 模板项目，工程名暂定为 Temp。
+
+    -   主工程目录可以 在源工程目录里面去操作 创建和整理，也可以在 eclipse IDE 里面设置。
+
+        -   在源工程目录里面操作：把 需要 include 并且要放入编译路径的其他程序文件分好文件夹，都放入 工程文件夹 Temp 里面，并把含有主函数 main() 的 .c 文件替换默认生成的 Hello World.c 文件。添加好工程文件之后，在 Eclipse 的主工程文件夹 Temp 上面 右击 选择 refresh 一下，即可更新好工程目录。
+        -   在 IDE 里面操作：在 IDE 中，右击工程名 Temp，选 New->Source Folder，把同上一步的文件夹添加进来；然后右击工程名 Temp，选 Refresh。
+        -   若源程序文件 不是 GBK 编码的，则 打开一个文件之后，在 Edit->Set Encoding 里面选择 相应的编码即可。或者统一设置：在 IDE 中，右击工程名 Temp，选 Properties，在 Resource 里面 改成 utf-8。
+
+    -   添加工程里面所有头文件：在 IDE 中，右击工程名 Temp，选 Properties，在 Nios II App.. Path 里面的 App include directories 里面添加需要 include 的其他程序文件夹。
+
+    -   关于 BSP 包设置：在 IDE 中，右击工程名 Temp，Nios II->BSP Editor，选择里面 enable_reduced... 和 enable_small_c 这两个选项，再到 linker Script 栏 里面点击 Retore Defaults，这会自动根据 sopc 中 nios ii 中 复位、异常向量存储位置的设置 来分配 软件程序 各个段 的分配，最后再点右下角的 Generate，等待完成后再关闭。
+
+    -   每次使用 Qsys 生成 SOPC 之后都要在 Quartus II 里面进行全编译一次，再下载最新的 .sof；每次在 Quartus II 里面全编译 之后，在 NIOS II 的 eclipse 里面都要重新生成 Generate BSP 一次，才能进行 NIOS II 的 软件程序的编译。
+
+    -   关于编译：在 IDE 中，菜单栏 Project 里面 选择 Build All，会同时编译 程序工程 和 BSP 工程。~~也有这样的：在 IDE 中，右击工程名 Temp，选 Build Project。~~
+
+    -   关于下载：工程全编译之后会生成 .elf 文件；这时应该确保在 Quartus II 里面对 逻辑部分 进行了全编译并且下载到 fpga 里面了，并保持其运行，此时在 eclipse 里面 右击 Temp 选择 Run As 里面的 ...Hardware 选项 进入下载页面，找到 Target Connection 栏 点 Refresh Connection 可以看到有 Processor 的识别，可以把下面的 system id check 里面的两个 ignore 打勾，然后点击 run 即可下载软件程序的 .elf 到 fpga 里面运行，点击 run 之后会回到 eclipse 界面，注意右下角的进度，进度完成之后 nios ii 软件程序就开始运行了。再编辑程序然后 Build All 之后，再 右击 Temp 选择 Run As 里面的 ...Hardware 可以直接下载程序而没有选择框，或者在 菜单栏 选择 Run->Run As->...Hardware 或者 选择 Run->Run 同样。
+
+    -   一定要确保，在 Quartus II 里面对逻辑进行全编译然后下载到板子里面，然后 eclipse 里面 点击 generate BSP 之后再 编译软件程序，再通过 Run Config.. 里面确认识别到 板子里的 sopc 系统 再 下载 nios ii 软件程序 跑在 对应的 sopc 上面。如果 fpga 有固化 sopc 系统，那么在 下载最新逻辑 .sof 之后，如果点了 复位 或者 fpga 重新上电了，那么这时 fpga 里面就不是最新的 逻辑了而是 可能之前固化的 旧逻辑，这时候下载 nios ii 程序 进去 也许能运行 但不会运行正确了。因此要保证 fpga 里面的逻辑 与 要下载 的 nios ii 程序都是最新的 或 是一一对应的。
+
+    -   关于程序没有语法错误但是编译报错：[关于NiosII的报错make: *** XXX.elf Error 1_万世奋飞的博客-CSDN博客](https://blog.csdn.net/baidu_36031503/article/details/83501281)。
+
+        > 一般有：
+        >
+        > 1、右击BSP工程--NiosII--Generate BSP。
+        >
+        > 2、Qsys硬件存储大小不够。
+        >
+        > 3、BSPEditor--enable_small_c_library和enable_reduced_device_drivers。
+        >
+        > 4、针对QuartusII13.0sp1的Qsys，在设计带有Timer的硬件，比如ucosII系统等有此要求。
+
+        - 若在 IDE 里面 Run 或者 Debug 时候显示 “make:[../..._bsp-recurs-make-lib] Error 2” 错误，则在 IDE 中，右击工程名 Temp，Nios II->BSP Editor，再点一下右下角的 Generate，并关闭重新编译，Run，试一试。
+
+          或者就是由于 分给 存储程序的 ram/rom 小于编译后需求的大小。
+
+        - > 主程序c文件中，编译时报错symbol xx could not be resolved.原因是该头文件未被更新。可选中软件工程及其bsp文件夹，右键->index->fresh all files更新所有文件，报错一般会消除。
+
+        - 如果 NIOS II 程序调试好了，关闭全部软件下次再打开和下载又不好使了，那么就全部重编译、下载一遍：Quartus II 里面对 所有逻辑（包括Qsys）全编译一次（此过程也会重新生成Qsys 的 SOPC 系统 而不必去 Qsys 里面去重新生成 SOPC 系统），再下载逻辑，再到 eclipse 里面 重新 generate BSP，然后编译 nios ii 软件程序 然后下载（Run）即可。
+        
+        - [NIOS II EDS中出现TYPE 'XXXX_BASE' COULD NOT BE RESOLVED的解决方法_lpwin81的博客-CSDN博客](https://blog.csdn.net/lpwin81/article/details/39339529)。
+
+-   程序调试（下载到 ram 中运行，逻辑只全编译一次生成 .sof 并下载，然后去下载 nios ii 软件编译后的 .elf，每次调试只下载 nios ii 程序）：
+
+    程序调试 见上面 “关于下载：” 一段话。
+
+-   程序固化（下载到 flash 中运行，每次下载 都需要全编译 逻辑 和 nios ii 程序），两种方法：
+
+    nios ii 复位向量在 flash 的方法：网友教程，这个方法要 sopc 的 nios ii 的复位向量在 flash，[niosii 把程序固化到epcs中的步骤_mail-mail的博客-CSDN博客_nios固化](https://blog.csdn.net/crjmail/article/details/106684038)。然后在 eclipse 里面编译 nios ii 软件程序 然后 Nios II->Flash Programmer 里面添加 最新逻辑全编译文件 .sof 和 最新 nios ii 程序编译文件 .elf 然后下载到 flash 里面。推荐这种方法。
+
+    nios ii 复位、异常向量均在 ram 的方法：这个方法是不用 sopc 的 nios ii 的复位向量在 flash 里面，即 这个方法 适用于 nios 的复位、异常向量均在 内建 ram 或 ddr 里面。1、开始编译，在 IDE 中，右击工程名 Temp，选 Build Project（或者用 菜单栏 Project 里面 选择 Build All），成功后再 Make Targets->Build，里面选 mem_init_generate  ，再点 Build。2、然后再把 Temp 文件夹里面的 mem_init 文件夹里面的 meminit.qip 文件加到 Quartus 工程中，再全编译产生一个 .sof 文件，进而转 .jic 文件进行固化。
+
+    两种方法都说到的在这里面有：[NIOS II 软件程序固化的相关知识 - 走看看 (zoukankan.com)](http://t.zoukankan.com/xiaomeige-p-7550801.html)，这里面第一个就是这里的 `nios ii 复位、异常向量均在 ram 的方法` 方法。
+
+#### 记录 Qsys 的 IP 核使用
+
+**官方文档查询**
+
+多看 官方文档。
+
+- Nios II 的 IP核 使用参考手册 《Embedded Peripherals IP User Guide》。
+- Nios II 的 部分 IP核 的软件编程手册 《Nios® II Software Developer Handbook》。
+- 上面两个手册均离线在 本仓库的 `Quartus II + Nios II 的 IP核手册` 文件夹里面。本文对应的 [Github](https://github.com/Staok/HDL-FPGA-study-and-norms)/[Gitee](https://gitee.com/staok/HDL-FPGA-study-and-norms) 仓库地址，本文最新的原文 和 一些源码、备查手册等等 均放在里面。
+
+**一个 基本 SOPC 系统搭建要添加的 外设 IP 列举**
+
+- Clock Source 外设 clk_0。要设置为 真实输入的时钟的频率，并对 clk frq known 打勾（后面的其它外设的频率相关的设置都与这个直接相关）
+
+- Nios II Processor。
+
+- On-Chip Memory (RAM or ROM) Intel FPGA IP。fpga 内建 ram 当作 nios ii 处理器的 内存（用来 存放、设置为 异常向量、复位向量）。
+
+  也可以将 DDR（比如 SDRAM、LPDDR2 等） 设置为 异常向量、复位向量 存放的地方，而不用内建 ram 了就。
+
+- Legacy EPCS/EPCQx1 Flash Controller Intel FPGA IP。或者加一个 epcs/epcq 控制器 ip，然后 nios ii 的复位向量选择 这个。
+
+- sysid。
+
+- UART (RS-232 Serial Port) Intel FPGA IP。
+
+- Interval Timer Intel FPGA IP。
+
+- PIO (Parallel I/O) Intel FPGA IP。
+
+SOPC 的 Nios 2 处理器构建时（Qsys 或 SOPC Builder里面）可以只加 RAM 或 DDR（不用 ROM）（RAM 大小：经验值至少大于10KB）（这里的 RAM 是 FPGA 里面的 M9K 存储器，不是外接 RAM 芯片的）来运行程序。当外设较多时，NIOS II 的底层驱动 HAL 库非常大，对于储存空间紧张的 FPGA 用 RAM + ROM 会资源不够，所以只用 RAM 且设置足够大。NIOS II processer 设置复位和中断向量均在 RAM 里面。
+
+SOPC系统构建（Qsys 或 SOPC Builder里面）还是得尽量添加 EPCS 存储器件 (如果板子只有一个 EPCS Flash（一般都是一个），那就是与 FPGA 存放逻辑共用的那个存储器件 )控制器和 SRAM （或 SDRAM）控制器（板子上要有至少一个 RAM 芯片），否则只靠 FPGA 的片上存储空间写 Nios II 程序，那么能写的程序太少了（HAL 库就占了非常多容量），非常受限。 
+
+一个例子：DMA测试能用，各个连接都对之后再截图放这里
+
+
+
+**PIO**
+
+- [Nios II PIO的详解与双向操作注意点 - 豆丁网 (docin.com)](https://www.docin.com/p-451673565.html)。
+
+**SDRAM**
+
+- [Qsys的SDRAM控制器 IP介绍和使用](https://blog.csdn.net/qq_43445577/article/details/107375619)。
+- [ise的时钟ip核_正点原子开拓者 Nios II资料连载第七章SDRAM IP核_Ruyuan Zhang的博客-CSDN博客](https://blog.csdn.net/weixin_31975737/article/details/112493504)。
+- [ FPGA学习[1]——在SDRAM中运行NIOS II 超详细教程（一）_大困困瓜的博客-CSDN博客](https://blog.csdn.net/little_cats/article/details/101125148)。
+
+软核中的使用例程如下（默认16位数据位）。
 
 ```c
  /* 写 *(ram_base) = i;  读 *(ram_base)*/
 unsigned short * ram_base = (unsigned short *)(SDRAM_0_BASE+0x10000);
 ```
 
-#### Nios II 相关
+其它 带有 HMC（硬件内存控制器，支持如 LPDDR2、DDR3 等）的 FPGA，可以在 Qsys 里面直接添加这个 外设 IP，然后在 NIOS II 编程时候 如上一样，通过指针指针直接访问。
 
--   关于 SOPC，Nios II Eclipse 里面的 BSP 包里的 drives 文件夹里面的 _reg 后缀 的 .h 文件里面为自加的 Nios II 外设的可调用的 API。
--   Nios II 默认禁止中断嵌套。
--   关于 Nios II software build tool for eclipse 这个 IDE 的设置 和 程序固化：
+**EPCS**
 
-    -   file->new->Nios II ...Template 从 .sopcinfo 文件获取信息新建 hello world 模板项目，工程名暂定为 Temp。
-    -   把 需要 include 放入编译路径的其他程序文件分好文件夹，都放入 工程文件夹 Temp 里面，并把含有主函数 main() 的 .c 文件替换默认生成的 Hello World.c 文件。
-    -   在 IDE 中，右击工程名 Temp，Nios II->BSP Editor，选择里面 enable_reduced... 和 enable_small_c 这两个选项，再点右下角的 Generate，并关闭。
-    -   在 IDE 中，右击工程名 Temp，选 Properties，在 Nios II App.. Path 里面的 App include directories 里面添加需要 include 的其他程序文件夹。
-    -   在 IDE 中，右击工程名 Temp，选 New->Source Folder，把同上一步的文件夹添加进来；然后右击工程名 Temp，选 Refresh。
-    -   开始编译，在 IDE 中，右击工程名 Temp，选 Build Project，成功后再 Make Targets->Build，里面选 mem_init_generate  ，再点 Build。
-    -   然后再把 mem_init 文件夹里面的 meminit.qip 文件到 Quartus 工程中，再全编译产生一个 .sof 文件，进而转 .jic 文件进行固化。
--   其他：若在 IDE 里面 Run 或者 Debug 时候显示 “make:[../..._bsp-recurs-make-lib] Error 2” 错误，则在 IDE 中，右击工程名 Temp，Nios II->BSP Editor，再点一下右下角的 Generate，并关闭重新编译，Run，即可。
--   SOPC 的 Nios 2 处理器构建时（Qsys 或 SOPC Builder里面）可以只加 RAM（不用 ROM）（RAM 大小：经验值至少大于10KB）（这里的 RAM 是 FPGA 里面的 M9K 存储器，不是外接 RAM 芯片的）来运行程序。当外设较多时，Nios 2 的底层驱动 HAL 库非常大，对于储存空间紧张的 FPGA 用 RAM + ROM 会资源不够，所以只用 RAM 且设置足够大。Nios 2 processer 设置复位和中断向量均在 RAM 里面。在 Quartus II 里面把逻辑和 Nios II software build tool for eclipse 生成的 Nios 2 程序文件 .qip 一同全编译产生 .sof 后，再转换成 .jic 文件进行固化。
--   SOPC系统构建（Qsys 或 SOPC Builder里面）还是得尽量添加 EPCS 存储器件 (如果板子只有一个 EPCS Flash（一般都是一个），那就是与 FPGA 存放逻辑共用的那个存储器件 )控制器和 SRAM （或 SDRAM）控制器（板子上要有至少一个 RAM 芯片），否则只靠 FPGA 的片上存储空间写 Nios II 程序，那么能写的程序太少了（HAL 库就占了非常多容量），非常受限。
+- [niosii 把程序固化到epcs中的步骤_mail-mail的博客-CSDN博客_nios固化](https://blog.csdn.net/crjmail/article/details/106684038)。
+- [NIOS 2 软核中EPCS配置芯片的存储操作_leon_zeng0的博客-CSDN博客](https://blog.csdn.net/leon_zeng0/article/details/53043298)。
+- [NIOS II软核中EPCS配置芯片的存储操作 - 百度文库 (baidu.com)](https://wenku.baidu.com/view/5c83b2f2f90f76c661371a52.html)。
+
+**SPI**
+
+- [NIOS II spi详解 - 程序员大本营 (pianshen.com)](https://www.pianshen.com/article/11571291984/)，[NIOS II spi详解 - 百度文库 (baidu.com)](https://wenku.baidu.com/view/c616401b3a68011ca300a6c30c2259010202f301.html)。
+
+**DMA**
+
+- [【转载】基于Nios II的DMA传输总结（附源码） - 走看看 (zoukankan.com)](http://t.zoukankan.com/kongtiao-p-2185783.html)。
+- [Nios II中DMA设备的使用_BuilderChen的博客-CSDN博客](https://blog.csdn.net/BuilderChen/article/details/1478698)。
+- [基于NiosⅡ的DMA传输及调试 - 百度文库 (baidu.com)](https://wenku.baidu.com/view/24c2cda165ce0508763213d7.html)。
+
+**NIOS II 软件程序自整理模板**
+
+直接看 NIOS II 软件编程一个自己整理的模板，里面对实用 Qsys IP 的使用和寄存器说明等，如 PIO、TIMER、UART、SPI、DMA、EPCS 等等，做了详细注释，和程序例子可以直接用。
+
+见 Github/Gitee 仓库：本文对应的 [Github](https://github.com/Staok/HDL-FPGA-study-and-norms)/[Gitee](https://gitee.com/staok/HDL-FPGA-study-and-norms) 仓库地址，本文最新的原文 和 一些源码、备查手册等等 均放在里面。
+
+#### 封装 Avalon IP 
+
 -   每一个外设尽量封装成 Avalon 接口的 IP 核，加入到 Nios II 的外设中；IP 核的设计分为三个层次，Avalon 接口层，寄存器层和逻辑层（输出层），Nios II 软件只需操作/读写 IP 核的寄存器组即可控制该 IP 核所有功能。
 -   创建自定义 IP 核一个详细教程 [Quartus创建自定义IP核 - LED控制IP核_欢迎光临-CSDN博客](https://blog.csdn.net/tq384998430/article/details/84988888)。
--   ...
 
 ### 更多小技巧教程文章
 
@@ -842,7 +991,7 @@ Intel FPGA Avalon 总线，其灵活特点有：
 -   高性能，易实现，占用资源少，开放使用。
 -   多种模式，时延和时序可调整，定制外设 IP 核超级灵活。
 
-若只使用 Quartus II 的 Qsys 自带的定制的 Avalon 总线外设构建SOPC系统，不需了解 Avalon 总线，因为这些自带外设的接口都已经写好了 Avalon 总线，在图形化连接总线时，就是在把各个外设的从 Avalon 接口挂载到 Nios II 的主 Avalon 总线上；若采用用户定制外设构建 SOPC 系统，所开发外设必须符合 Avalon 总线规范，需要熟悉 Avalon 总线。下图为典型 Avalon 架构。下图最右面上下两个外设框分别为用户自定义主端口和用户自定义从端口。
+若只使用 Quartus II 的 Qsys 自带的定制的 Avalon 总线外设构建 SOPC 系统，不需了解 Avalon 总线，因为这些自带外设的接口都已经写好了 Avalon 总线，在图形化连接总线时，就是在把各个外设的从 Avalon 接口挂载到 Nios II 的主 Avalon 总线上；若采用用户定制外设构建 SOPC 系统，所开发外设必须符合 Avalon 总线规范，需要熟悉 Avalon 总线。下图为典型 Avalon 架构。下图最右面上下两个外设框分别为用户自定义主端口和用户自定义从端口。
 
 ![典型Avalon架构](assets/典型Avalon架构.png)
 
@@ -856,13 +1005,13 @@ Avalon 主端口发起对 Avalon 总线的传输，Avalon 从端口响应来自 
 
 #### 从端口信号类型
 
-*p.s 其中前九个最常用；不带 "_ n" 后缀的都是高电平有效；还有流水线信号、突发信号、三态信号和流控信号等，没有列出。*
+*p.s 其中前九个（标粗体的）最常用；不带 "_ n" 后缀的都是高电平有效；还有流水线信号、突发信号、三态信号和流控信号等，没有列出。*
 
 *p.s 不带任何读写功能的、最基本信号：clk、reset_n、chipselect、address 四个，即下表中的前四个。*
 
 *p.s address 地址的信号宽度最好都设置为 32 位宽，地址对齐的时候一一对应，最简便。*
 
-*p.s Avalon 接口规范没有对Avalon外设的信号指定命名规则；Avalon 外设的信号的名字可以与信号类型名相同，也可以遵循 用户 / 系统级的命名规则。*
+*p.s Avalon 接口规范没有对 Avalon 外设的信号指定命名规则；Avalon 外设的信号的名字可以与信号类型名相同，也可以遵循 用户 / 系统级的命名规则。*
 
 *p.s 下表只列基本信号，其它如流水线信号、突发信号、流控制信号、三态信号等不予列出。*
 
@@ -882,7 +1031,7 @@ Avalon 主端口发起对 Avalon 总线的传输，Avalon 从端口响应来自 
 | writebyteenable | 2,4,6,8,16,32,64,128 | IN   | 该信号是byteenable信号和write信号的逻辑与操作。write和byteenable信号不能使用。 |
 | Begin transfer  | 1                    | IN   | 在每次传输的第一个周期内有效，使用用法取决于具体外设。       |
 
-32位从端口的 byteenable 信号功能定义表如下。
+32 位从端口的 byteenable 信号功能定义表如下。
 
 | byteenable[3..0] | 写操作             |
 | ---------------- | ------------------ |
@@ -900,7 +1049,7 @@ IN （输入）类型的信号都是 Avalon 总线进行置位，从端口不能
 
 #### 从端口传输模式列举
 
--   基本单周期读写时序传输。固定等待周期的读写传输；可变等待周期的读写传输（个人推荐常用）。（只对从端口有）
+-   基本**单周期**读写时序传输。**固定等待周期**的读写传输。**可变等待周期**的读写传输（个人推荐常用）。（只对从端口有）
 -   具有建立时间和保持时间的固定等待周期的读写传输（用于异步外设，了解）。（只对从端口有）
 -   流水线读传输（带固定延迟和可变延迟）。
 -   流控制时序传输。
@@ -917,27 +1066,25 @@ IN （输入）类型的信号都是 Avalon 总线进行置位，从端口不能
 
 A 沿为主端口发起 读传输，E 沿 为主端口取走要读的数据；在 E 沿之前从端口的外设必须提前在 readdata 数据线上准备好数据。
 
-基本读传输适用于异步从外设，只要外设被选中或地址发生变化，外设就立刻返回数据。readdata须在下一个时钟上升沿之前保持稳定。
+基本读传输适用于异步从外设，只要外设被选中或地址发生变化，外设就立刻返回数据。readdata 须在下一个时钟上升沿之前保持稳定。
 
 从端口通常在 clk **下降沿** 检测 chipselect 和 read 两个信号同时为高时，就认为一次读传输。
-
-基本读传输适用于异步从外设，只要外设被选中或地址发生变化，外设就立刻返回数据。readdata 须在下一个时钟上升沿之前保持稳定。
 
 **写时序：**
 
 ![基本单周期写时序](assets/基本单周期写时序.png)
 
-A 沿为主端口发起 写传输，E 沿为主端口准备好要写的数据，在此沿从端口外设要取走数据。基本写传输适用于片内同步外设。
+A 沿为主端口发起 写传输，D 沿为主端口准备好要写的数据，在此沿从端口外设要取走数据。基本写传输适用于片内同步外设。
 
-从端口通常在 clk **下降沿** 检测 chipselect 和 write 两个信号同时为高时，就认为一次读传输。
+从端口通常在 clk **下降沿** 检测 chipselect 和 write 两个信号同时为高时，就认为一次读传输。从端口可以在 D 沿取走数据。
 
 基本写传输适用于片内同步外设。
 
 #### 固定等待周期的读写传输
 
-读传输：等待周期允许从端口使用一个或多个时钟周期来捕获地址和/或返回有效readdata，等待周期会影响从端口的吞吐量。
+读传输：等待周期允许从端口使用一个或多个时钟周期来捕获地址和/或返回有效 readdata，等待周期会影响从端口的吞吐量。
 
-写传输：等待周期允许从端口使用一个或多个时钟周期来捕获地址和writedata，等待周期会影响从端口的吞吐量。 
+写传输：等待周期允许从端口使用一个或多个时钟周期来捕获地址和 writedata，等待周期会影响从端口的吞吐量。 
 
 用于同步外设访问，读传输等待周期是必须的，写传输非必须。
 
