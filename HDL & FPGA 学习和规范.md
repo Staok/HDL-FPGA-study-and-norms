@@ -728,6 +728,8 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 
 教程参考：[ quartus II关于时钟约束_ a346544987的博客-CSDN博客 _quartus时钟约束](https://blog.csdn.net/a346544987/article/details/113667128)。
 
+用 cdc 文件对 时钟进行时序约束非常重要，在对 逻辑工程 进行全编译后 若 timing analysis 中 显示 有时钟信号未被约束（红色），那么此时综合出来的逻辑肯定是有问题的，必须对 提示的 未约束的 信号 相关的 时钟信号 设置 始终约束 一下，经验：**可以按照可能用到的最高时钟频率进行约束**，始终约束的频率设置的高，达到 MHz 级别 才更能成功约束住，如果很低反而处理不了。
+
 ##### SignalTap II 使用
 
 SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部部分逻辑和 RAM 资源，进行存储，并通过 JTAG 发送到 PC 上的 SignalTap II 软件来观察时序图，其采样深度会受 FPGA 内部 RAM 限制，一般够用。
@@ -761,6 +763,17 @@ SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部
 
 - [【原创FPGA教程】Quartus II的奇幻漂流V1.0——手把手教你使用Quartus II_VITO_ 铁掌北京漂 _新浪博客 (sina.com.cn)](http://blog.sina.com.cn/s/blog_bff0927b0102v0u3.html)，第 5 章 调试利器 SignalTap II 的使用，比较详细。
 - 正点原子 FPGA 开发板 配套教程书，开拓者FPGA 开发指南等 的 SignalTap II 软件的使用 章节，比较粗略。
+
+##### In-System Memory Content Editor 使用
+
+> Quartusii 调试工具中的 In-System Memory Content Editor，其主要功能就是能实时更改 RAM，ROM 中的数值，同时也可以修改 FPGA 内部定义的常数值。
+
+实时查看 FPGA 内建 RAM 的值，很方便的工具。还可以导出数据，格式有 hex 和 mif。
+
+推荐教程：
+
+- [Quartusii 调试工具之In-System Memory Content Editor_huan09900990的博客-CSDN博客](https://blog.csdn.net/huan09900990/article/details/78890356)。
+- 《QuartusII的奇幻漂流_v1.0.pdf》的 7.4 章节。
 
 #### 记录 QII 的 IP 核使用
 
@@ -810,6 +823,10 @@ SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部
 
 #### Qsys/Nios II 相关
 
+-   [Nios II自学笔记一：Nios II软硬件架构介绍_搬砖的MATTI的博客-CSDN博客_nios](https://blog.csdn.net/SHYHOOD/article/details/115582258)。
+
+-   [nios自学笔记二：一个简易的Qsys系统的开发流程_搬砖的MATTI的博客-CSDN博客_qsys](https://blog.csdn.net/SHYHOOD/article/details/115671998)。
+
 -   [NIOS II使用经验_shimmy_lee的博客-CSDN博客_nios](https://blog.csdn.net/shimmy_lee/article/details/54091068)。
 
 -   关于 SOPC，Nios II Eclipse 里面的 BSP 包里的 drives 文件夹里面的 _reg 后缀 的 .h 文件里面为自加的 Nios II 外设的可调用的 API。
@@ -821,10 +838,9 @@ SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部
     1. 复位、异常都在 内建ram里；
     2. 复位在 flash 里，异常在 内建ram里；
     3. 复位在 flash 里，异常在 ddr（sdram 或 lpddr2 等 控制器 IP） 里。
-
     
     以上每一种情况都可以 下载到 ram 调试 和 进行固化（两种方法）。具体见下面 “程序调试” 和 “程序固化” 几段话。
-    
+
 -   关于 Nios II software build tool for eclipse 这个 IDE 的设置：
 
     -   file->new->Nios II ...Template 从 .sopcinfo 文件获取信息新建 hello world 模板项目，工程名暂定为 Temp。
@@ -875,11 +891,13 @@ SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部
 
 -   程序固化（下载到 flash 中运行，每次下载 都需要全编译 逻辑 和 nios ii 程序），两种方法：
 
-    nios ii 复位向量在 flash 的方法：网友教程，这个方法要 sopc 的 nios ii 的复位向量在 flash，[niosii 把程序固化到epcs中的步骤_mail-mail的博客-CSDN博客_nios固化](https://blog.csdn.net/crjmail/article/details/106684038)。然后在 eclipse 里面编译 nios ii 软件程序 然后 Nios II->Flash Programmer 里面添加 最新逻辑全编译文件 .sof 和 最新 nios ii 程序编译文件 .elf 然后下载到 flash 里面。推荐这种方法。
+    1、nios ii 复位向量在 flash 的方法：网友教程，这个方法要 sopc 的 nios ii 的复位向量在 flash，[niosii 把程序固化到epcs中的步骤_mail-mail的博客-CSDN博客_nios固化](https://blog.csdn.net/crjmail/article/details/106684038)。然后在 eclipse 里面编译 nios ii 软件程序 然后 Nios II->Flash Programmer 里面添加 最新逻辑全编译文件 .sof 和 最新 nios ii 程序编译文件 .elf 然后下载到 flash 里面。推荐这种方法。
 
-    nios ii 复位、异常向量均在 ram 的方法：这个方法是不用 sopc 的 nios ii 的复位向量在 flash 里面，即 这个方法 适用于 nios 的复位、异常向量均在 内建 ram 或 ddr 里面。1、开始编译，在 IDE 中，右击工程名 Temp，选 Build Project（或者用 菜单栏 Project 里面 选择 Build All），成功后再 Make Targets->Build，里面选 mem_init_generate  ，再点 Build。2、然后再把 Temp 文件夹里面的 mem_init 文件夹里面的 meminit.qip 文件加到 Quartus 工程中，再全编译产生一个 .sof 文件，进而转 .jic 文件进行固化。
+    2、nios ii 复位、异常向量均在 ram 的方法：这个方法是不用 sopc 的 nios ii 的复位向量在 flash 里面，即 这个方法 适用于 nios 的复位、异常向量均在 内建 ram 或 外部 sdram/ddr 里面。1、开始编译，在 IDE 中，右击工程名 Temp，选 Build Project（或者用 菜单栏 Project 里面 选择 Build All），成功后再 Make Targets->Build，里面选 mem_init_generate  ，再点 Build。2、然后再把 Temp 文件夹里面的 mem_init 文件夹里面的 meminit.qip 文件加到 Quartus 工程中，再全编译产生一个 .sof 文件，进而转 .jic 文件进行固化。
 
     两种方法都说到的在这里面有：[NIOS II 软件程序固化的相关知识 - 走看看 (zoukankan.com)](http://t.zoukankan.com/xiaomeige-p-7550801.html)，这里面第一个就是这里的 `nios ii 复位、异常向量均在 ram 的方法` 方法。
+
+    批量量产的方法：[nios自学笔记四：将sof和elf合并为JIC文件_搬砖的MATTI的博客-CSDN博客_sof和elf怎么一起转化成jic文件](https://blog.csdn.net/SHYHOOD/article/details/115707136)。
 
 #### 记录 Qsys 的 IP 核使用
 
