@@ -721,7 +721,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 1. 先对 Quartus II 工程 进行 全编译 一遍。
 1. 打开 Timing Analyzer。
 2. 选择菜单栏 Netlist -> Create Timing Netlist，弹出对话框保持默认（保持选择 Post-fit），确认。
-3. 添加要约束的时钟，在标题栏选择 Constrains 里面选择 Creat Clock 打开对话框，Targets 选择 Quartus II 工程里面的 一个时钟信号，然后填入 Clock name（随意，可与 工程内时钟信号名保持一致），Period 为该时钟的周期，如实填写，上升和下降的时刻 分别写上 0 和  Period 的一半即可，再点 Run。关闭对话框。
+3. 添加要约束的时钟，在标题栏选择 Constrains 里面选择 Creat Clock 打开对话框，Targets 选择 Quartus II 工程里面的 一个时钟信号（搜索信号名字的时候可以这样写 `*<信号名的一部分>*`，两边通配符更好找），然后填入 Clock name（随意，可与 工程内时钟信号名保持一致），Period 为该时钟的周期，如实填写，上升和下降的时刻 分别写上 0 和  Period 的一半即可，再点 Run。关闭对话框。
 4. 左边 Task 栏里面 依次双击 Update Timing Netlist 和 Write SDC File，第二个是保存 sdc 文件，选择一个合适的文件名和位置。然后可以关闭 Timing Analyzer。根据设置生成 sdc 约束文件，里面是约束的命令语句。
 5. 在 Quartus II 工程中添加自己生成的 sdc 文件，点击 Assignments -> Settings 里面的 Timing Analyzer，添加上面生成的 sdc 文件，关闭。可以看到 Quartus II 工程中 File 多了该 sdc 文件。然后对 Quartus II 工程 全编译。
 6. 再进入 Timing Analyzer，左边 Task 栏下面 先双击 Read SDC File，再找到左边 Task 栏下面 Macros 里面的 Report All Core Timing，双击打开，可以在右边栏看到 综合布线后各个信号线的传递裕量（Slack），为从小到大配列，该值为正的即可，越大越好。左边的其他栏目可以看到建立时间、保持时间的裕量等更多信息。
@@ -729,6 +729,8 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 教程参考：[ quartus II关于时钟约束_ a346544987的博客-CSDN博客 _quartus时钟约束](https://blog.csdn.net/a346544987/article/details/113667128)。
 
 用 cdc 文件对 时钟进行时序约束非常重要，在对 逻辑工程 进行全编译后 若 timing analysis 中 显示 有时钟信号未被约束（红色），那么此时综合出来的逻辑肯定是有问题的，必须对 提示的 未约束的 信号 相关的 时钟信号 设置 始终约束 一下，经验：**可以按照可能用到的最高时钟频率进行约束**，始终约束的频率设置的高，达到 MHz 级别 才更能成功约束住，如果很低反而处理不了。
+
+如果 FPGA 的逻辑资源的使用率达到 90% 以上后有可能就无论如何也无法约束了，不会把逻辑资源用满，留多一些逻辑资源裕量，方便综合器布线和约束。
 
 ##### SignalTap II 使用
 
@@ -821,7 +823,7 @@ SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部
   );
   ```
 
-#### Qsys/Nios II 相关
+#### 记录 Qsys/Nios II 相关
 
 -   [Nios II自学笔记一：Nios II软硬件架构介绍_搬砖的MATTI的博客-CSDN博客_nios](https://blog.csdn.net/SHYHOOD/article/details/115582258)。
 
@@ -857,7 +859,7 @@ SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部
 
     -   每次使用 Qsys 生成 SOPC 之后都要在 Quartus II 里面进行全编译一次，再下载最新的 .sof；每次在 Quartus II 里面全编译 之后，在 NIOS II 的 eclipse 里面都要重新生成 Generate BSP 一次，才能进行 NIOS II 的 软件程序的编译。
 
-    -   关于编译：在 IDE 中，菜单栏 Project 里面 选择 Build All，会同时编译 程序工程 和 BSP 工程。~~也有这样的：在 IDE 中，右击工程名 Temp，选 Build Project。~~
+    -   关于编译：在 IDE 中，菜单栏 Project 里面 选择 Build All，会同时编译 程序工程 和 BSP 工程。~~也有这样的：在 IDE 中，右击工程名 Temp，选 Build Project~~。把杀毒软件关掉会大大加快编译速度。。。
 
     -   关于下载：工程全编译之后会生成 .elf 文件；这时应该确保在 Quartus II 里面对 逻辑部分 进行了全编译并且下载到 fpga 里面了，并保持其运行，此时在 eclipse 里面 右击 Temp 选择 Run As 里面的 ...Hardware 选项 进入下载页面，找到 Target Connection 栏 点 Refresh Connection 可以看到有 Processor 的识别，可以把下面的 system id check 里面的两个 ignore 打勾，然后点击 run 即可下载软件程序的 .elf 到 fpga 里面运行，点击 run 之后会回到 eclipse 界面，注意右下角的进度，进度完成之后 nios ii 软件程序就开始运行了。再编辑程序然后 Build All 之后，再 右击 Temp 选择 Run As 里面的 ...Hardware 可以直接下载程序而没有选择框，或者在 菜单栏 选择 Run->Run As->...Hardware 或者 选择 Run->Run 同样。
 
@@ -915,11 +917,11 @@ SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部
 
 - Nios II Processor。
 
-- On-Chip Memory (RAM or ROM) Intel FPGA IP。fpga 内建 ram 当作 nios ii 处理器的 内存（用来 存放、设置为 异常向量、复位向量）。
+- On-Chip Memory (RAM or ROM) Intel FPGA IP，需要连接 NIOS 的 数据总线 和 指令总线。fpga 内建 ram 当作 nios ii 处理器的 内存（用来 存放、设置为 异常向量、复位向量）。
 
-  也可以将 DDR（比如 SDRAM、LPDDR2 等） 设置为 异常向量、复位向量 存放的地方，而不用内建 ram 了就。
+  也可以将 DDR（比如 SDRAM、LPDDR2 等） 设置为 异常向量、复位向量 存放的地方，而不用内建 ram 了就。当删除 SDRAM/DDR IP 的时候，应该 在 NIOS IP 参数里面 将 异常 地址选择那里选择其它 存储器（需要手动改，软件不会自动改）。
 
-- Legacy EPCS/EPCQx1 Flash Controller Intel FPGA IP。或者加一个 epcs/epcq 控制器 ip，然后 nios ii 的复位向量选择 这个。
+- Legacy EPCS/EPCQx1 Flash Controller Intel FPGA IP。或者加一个 epcs/epcq 控制器 ip，然后 nios ii 的复位向量选择 这个。使用 EPCQ256 之类的 可以用 Flash Serial controller II IP，在里面选择 FLASH 型号。
 
 - sysid。
 
