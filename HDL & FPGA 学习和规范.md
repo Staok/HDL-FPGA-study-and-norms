@@ -3,18 +3,17 @@
 <p align="center">
     <img src="assets/CC-BY-NC-SA-4.0-88x31.png" alt="CC BY-NC-SA 4.0 88x31"  />
 </p>
-
-***p.s 温馨提示：点个 star 收藏一下回头慢慢看；或者下(白)载(嫖)下来，在 Typora 中阅读；[本文知乎地址](https://zhuanlan.zhihu.com/p/356856108) ；整理不易，请多支持。***      
-
 编辑整理 by [Staok](https://github.com/Staok)，始于 2021.2 且无终稿。转载请注明作者及出处。
 
 本文件是“瞰百易”计划的一部分，尽量遵循[“二项玻”定则](https://github.com/Staok/Please-stay-in-the-future)，~~致力于与网络上碎片化严重的现象泾渭分明！~~
 
-本文系广泛撷取、借鉴和整理，适合刚入门的人阅读和遵守，已经有较多经验的人看一看图个乐，如有错误恭谢指出！本文已经是长期积累和堆叠而形成一定规模，不必按照从前到后的顺序去看，可以挑感兴趣的章节去看。
+本文系广泛撷取、借鉴和整理，适合刚入门的人阅读和遵守，已经有较多经验的人看一看图个乐，如有错误恭谢指出！**本文已经是长期积累和堆叠而形成一定规模，不必按照从前到后的顺序去看，可以挑感兴趣的章节去看。**
 
 本文为简述风格，本意即记录要点和便于快速拾起。
 
 本文对应的 [Github](https://github.com/Staok/HDL-FPGA-study-and-norms)/[Gitee](https://gitee.com/staok/HDL-FPGA-study-and-norms) 仓库地址，本文最新的原文 和 一些源码、备查手册等等 均放在里面。
+
+p.s 温馨提示：点个 star 收藏一下回头慢慢看；或者下(白)载(嫖)下来，在 Typora 中阅读；[本文知乎地址（不是最新）](https://zhuanlan.zhihu.com/p/356856108) ；整理不易，请多支持。
 
 ------
 
@@ -26,18 +25,47 @@
 
 ## O.0 值得跟着的学习网站
 
+**强烈推荐看下面分享链接里收集整理的教程（永久有效）**：
+
+链接：https://pan.baidu.com/s/1cWzZQZlS9OUVvuDy7VFTsw?pwd=XHYS   提取码：XHYS
+
+**真的强烈推荐里面的几个教程文档，看了就会，嘎嘎高效**：
+
+- `【Quartus & Qsys 教程文档 \ QuartusII的奇幻漂流_v1.0.pdf`。
+- `【Quartus & Qsys 教程文档 \ NiosII的奇幻漂流-v2.0.pdf`。
+- `【Verilog 语言和规范 \`。
+
+————————————————
+
+下面这些看看就好，主要看上面的。
+
+学习路线总结文章：
+
+- [如何学习FPGA，FPGA学习教程学习经验 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/406835323)。
+- [FPGA简介 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/401954780)。
+- [Verilog知识大全 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/444188673)。
+- .etc
+
+入门 & 学习：
+
 -   SOC FPGA 和 FPGA 等各种开发板开源资料（网上可以找到全套资料）：如 正点原子、野火、黑金 等开发板（考验资料搜集能力的时候到了）。推荐这种学习方式。
 -   [小梅哥 B站视频（Verilog & FPGA基础，SOPC，SOC以及其他常用协议](https://space.bilibili.com/476579378) 缺点：视频太~长了。
--   [LeiWang1999/FPGA: 帮助大家进行FPGA的入门，分享FPGA相关的优秀文章，优秀项目 (github.com)](https://github.com/LeiWang1999/FPGA) 记录比较全面。
+-   [LeiWang1999/FPGA: 帮助大家进行FPGA的入门，分享FPGA相关的优秀文章，优秀项目 (github.com)](https://github.com/LeiWang1999/FPGA) 记录比较全面，内容丰富可反复看。
 
 文档形式的教程：
 
 -   [Verilog 教程 | 菜鸟教程 (runoob.com)](https://www.runoob.com/w3cnote/verilog-tutorial.html)。
+
 -   [Quartus II的奇幻漂流V1.0——手把手教你使用Quartus II](http://blog.sina.com.cn/s/blog_bff0927b0102v0u3.html) 推荐。
--   [Nios II的奇幻漂流V2.0——基于Qsys的Nios II设计教程](http://blog.sina.com.cn/s/blog_bff0927b0102uzmh.html) 推荐。
--   [Nios II入门实验](https://www.cnblogs.com/yuphone/category/276816.html)。
--   [小梅哥 FPGA资料专区](http://www.corecourse.cn/forum.php?mod=forumdisplay&fid=41)。
--   [小梅哥 - 博客园](https://www.baidu.com/link?url=CYD8ZBPmHJP4lnc7VKOm_uIU55a5sTGQWKyKYCixBTbitt-DLiyDpbSK0VhrnSSJ&wd=&eqid=9dea342a00000a8400000006603cb8f7)。
+
+    [Nios II的奇幻漂流V2.0——基于Qsys的Nios II设计教程](http://blog.sina.com.cn/s/blog_bff0927b0102uzmh.html) 推荐。
+
+    这两个链接可能失效，但文档已经下载并分享（永久有效）：
+
+    链接：https://pan.baidu.com/s/1cWzZQZlS9OUVvuDy7VFTsw?pwd=XHYS   提取码：XHYS
+
+-   [Nios II入门实验](https://www.cnblogs.com/yuphone/category/276816.html)。[小梅哥 FPGA资料专区](http://www.corecourse.cn/forum.php?mod=forumdisplay&fid=41)。[小梅哥 - 博客园](https://www.baidu.com/link?url=CYD8ZBPmHJP4lnc7VKOm_uIU55a5sTGQWKyKYCixBTbitt-DLiyDpbSK0VhrnSSJ&wd=&eqid=9dea342a00000a8400000006603cb8f7)。比较杂。
+
 -   [HDL & FPGA 学习和规范（HDL-&-FPGA- study）](https://github.com/Staok/HDL-FPGA-study-and-norms) 就是本文。
 
 FPGA 的 时序分析 和 时序约束 的资料参考：
@@ -49,13 +77,6 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 - 《深入浅出玩转FPGA第三版》 时序分析章节 书。
 - 《通向FPGA之路---七天玩转Altera之时序篇V1.0》书。
 
-学习路线总结文章：
-
-- [如何学习FPGA，FPGA学习教程学习经验 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/406835323)。
-- [FPGA简介 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/401954780)。
-- [Verilog知识大全 - 知乎 (zhihu.com)](https://zhuanlan.zhihu.com/p/444188673)。
-- etc
-
 ## 0.25 开源 & 学习 FPGA 开发板
 
 以下 FPGA 开发板提供了完善的 软硬件资料，参考意义极大。
@@ -65,11 +86,12 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 - [黑金 FPGA 开发板 - 芯驿电子科技(上海)有限公司 (alinx.cn)](http://www.alinx.cn/index.php/default/category/23/PRODUCT.html)。
 - [Xilinx FPGA板卡 - 米尔科技 (myir-tech.com)](http://www.myir-tech.com/product/index.asp?anclassid=90)。
 - [Terasic - DE 系列母板](http://www.terasic.com.cn/cgi-bin/page/archive.pl?Language=China&CategoryNo=178)，terasIC 开源其开发板的原理图和例程，作为参考设计很不错。
-- [STEP FPGA开源社区\]](https://www.stepfpga.com/doc/fpga_start)，目前开源好几款FPGA开发板和各种参考案例、教程，比较丰富。
+- [STEP FPGA开源社区\]](https://www.stepfpga.com/doc/fpga_start)，目前开源好几款 FPGA 开发板和各种参考案例、教程，比较丰富。
 
-## 0.75 FPGA 相关好文杂文存放
+## 0.5 FPGA 相关好文杂文存放
 
 - [如何从零开始将神经网络移植到FPGA(ZYNQ7020)加速_Jarvis码员的博客-CSDN博客_将神经网络部署到fpga上](https://blog.csdn.net/u012116328/article/details/117246023)。
+- .etc
 
 ## 1 HDL & FPGA 值得注意的
 
@@ -127,7 +149,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 
 -   推荐多去读读 FPGA 原厂（Altera 或 Xilinx）的官方文档，在它们的一些文档手册中有各种常见的电路的参考实现实例和代码风格。
 
--   板级PCB走线遵循“[PCB走线规范](https://github.com/Staok/thoughs-about-hardware-design)”。
+-   板级 PCB 走线遵循 “[PCB走线规范](https://github.com/Staok/thoughs-about-hardware-design)”。
 
 -   ...
 
@@ -143,6 +165,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 4. 条件逻辑/状态图等一定要遍历所有状态，一定，防止不可预料的错误综合结果，对于 if 要有 else，对于 case 要有 default。
 5. 对于仿真：先对每一个单个模块仿真，要求代码覆盖率、条件分支覆盖率、表达式覆盖率必须达到 100%，这三个可以通过 Modelsim 查看；子系统仿真，将多个模块组合在一起进行仿真，覆盖率尽量高；系统级仿真，软硬件整板联调。仔细设计仿真激励文件。
 6. 通常采用自顶向下的设计方式。先确定系统有哪些输入和输出，把系统划分成多个子功能模块（框图模块），每个功能模块再划分下一层的子模块（HDL 意义上的模块），最后的每个模块的设计对应一个 module ，可以一个 module 设计成一个 verilog HDL 文件。
+6. 在 FPGA 逻辑全编译之前，尽量将全部 顶层 IO 分配给 实体芯片的引脚 而 不要空置，没用到的输入信号也要 assign 到 确定的 0 或 1，这样不但保证 确定的逻辑行为，而且如果不做那么全编译时 Timing 时序 无法保证 从而 亮红。
 7. 工程文件夹划分规范：prj 为工程文件存放目录； rtl 为 verilog 可综合代码存放目录； testbench 为测试文件存放目录； img 为设计相关图片存放目录； doc 为设计相关文档存放目录； prj 文件夹下还建立了子文件夹 ip，用于存放 Quartus Prime 中生成的 IP 核文件。  
 
 #### Verilog HDL
@@ -712,7 +735,7 @@ FPGA 的 时序分析 和 时序约束 的资料参考：
 
 7. 在 ModelSim 里面重新仿真，先点 `Restart`，再在菜单栏找到 `Run -All` 则重新仿真。
 
-##### 时钟信号约束
+##### Timing Analyzer 时钟信号约束
 
 对于时钟信号的约束，必须要做，最基本要做的是使用 “TimeQuest timing Analyzer” 把设计内的所有时钟信号（包括晶振输入的时钟和 PLL 时钟）都约束一下。以下是具体步骤。
 
@@ -787,6 +810,10 @@ SignalTap II 捕获和显示 FPGA 内部的 实时信号。其占用 FPGA 内部
 - 本仓库的 `Quartus II + Nios II 的 IP核手册` 文件夹里面。本文对应的 [Github](https://github.com/Staok/HDL-FPGA-study-and-norms)/[Gitee](https://gitee.com/staok/HDL-FPGA-study-and-norms) 仓库地址，本文最新的原文 和 一些源码、备查手册等等 均放在里面。
 
 已经添加的 IP 核 是可以再编辑参数的，在 QII 软件左上角 的 Project Navigator 右边下拉框选择 IP components 里面可以看到所有添加的 IP，双击可以再编辑参数，若不能，则重新打开 QII 工程一下再试试。
+
+**PIO**
+
+提醒一点，使用 IO 中断时候，要确保 IO 接到一个确定的电平，不要空接，否则循环进入中断导致 NIOS II 看起来不运行。
 
 **NCO 正弦波合成**
 
@@ -997,7 +1024,15 @@ unsigned short * ram_base = (unsigned short *)(SDRAM_0_BASE+0x10000);
 -   [NingHeChuan](https://ninghechuan.com/) 网友个人博客 有许多 FPGA 分享。
 -   ...
 
+### 更多好设计规范总结
 
+- [Verilog HDL语言入门（一）_newzhpfree的博客-CSDN博客](https://blog.csdn.net/newzhpfree/article/details/129627023)。
+- [Verilog HDL语言入门（二）_newzhpfree的博客-CSDN博客](https://blog.csdn.net/newzhpfree/article/details/129627043)。
+
+——
+
+- [硬件原理图设计规范(一)_newzhpfree的博客-CSDN博客](https://blog.csdn.net/newzhpfree/article/details/129653934)。
+- [硬件原理图设计规范（二）_newzhpfree的博客-CSDN博客](https://blog.csdn.net/newzhpfree/article/details/129654021)。
 
 ------
 
@@ -1239,6 +1274,8 @@ OLED 定制外设 IP 的部分源码，从端口的写传输实现，VHDL。
 *p.s 以下为列举日常项目中用到的可以开源的部分模块源码（Verilog or VHDL）或者实现思想（就是留个坑，但还没写）。*
 
 -   [Github 上有哪些优秀的 Verilog/FPGA 项目？](https://www.zhihu.com/question/348990787) 有很多好的推荐项目和回答！
+
+-   [WangXuan95 (WangXuan95) / Repositories (github.com)](https://github.com/WangXuan95?tab=repositories) 开源了许多 Verilog IP。
 
 -   [Alex Forencich 的 GitHub 主页](https://github.com/alexforencich) 开源了许多 Verilog IP，[Verilog IP cores - Alex Forencich](http://www.alexforencich.com/wiki/en/verilog/start)。
 
